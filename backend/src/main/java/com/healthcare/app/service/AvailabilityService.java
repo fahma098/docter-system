@@ -107,8 +107,9 @@ public class AvailabilityService {
         // Existing appointments for the day
         List<Appointment> existingAppointments = appointmentRepository.findByDoctorAndDate(doctorId, date);
 
-        int minAdvanceHours = Integer.parseInt(systemSettingRepository.getValueOrDefault("MIN_ADVANCE_BOOKING_HOURS", "2"));
-        LocalDateTime minAdvanceDateTime = LocalDateTime.now().plusHours(minAdvanceHours);
+        int minAdvanceHours = Integer.parseInt(systemSettingRepository.getValueOrDefault("MIN_ADVANCE_BOOKING_HOURS", "0"));
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime minAdvanceDateTime = minAdvanceHours > 0 ? now.plusHours(minAdvanceHours) : now.minusMinutes(5);
 
         int availableCount = 0;
 

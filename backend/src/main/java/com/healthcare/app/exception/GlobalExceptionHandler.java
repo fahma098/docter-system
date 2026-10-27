@@ -64,6 +64,17 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error("Invalid request data format. Please check your form fields."));
     }
 
+    @ExceptionHandler(org.springframework.transaction.TransactionException.class)
+    public ResponseEntity<ApiResponse<Void>> handleTransactionException(org.springframework.transaction.TransactionException ex) {
+        log.error("Transaction exception occurred: ", ex);
+        Throwable root = ex.getRootCause();
+        if (root instanceof BusinessValidationException || root instanceof SlotAlreadyBookedException || root instanceof ResourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(root.getMessage()));
+        }
+        String msg = (root != null && root.getMessage() != null) ? root.getMessage() : ex.getMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(msg));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception ex) {
         log.error("Unhandled server exception: ", ex);

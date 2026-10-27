@@ -163,7 +163,7 @@ public class AppointmentRepository {
      */
     public boolean hasConflictingAppointmentWithLock(Long doctorId, LocalDate date, LocalTime startTime, LocalTime endTime, Long excludeAppointmentId) {
         StringBuilder sql = new StringBuilder("""
-            SELECT COUNT(*) FROM appointments 
+            SELECT appointment_id FROM appointments 
             WHERE doctor_id = ? 
               AND appointment_date = ? 
               AND appointment_status NOT IN ('CANCELLED')
@@ -183,10 +183,10 @@ public class AppointmentRepository {
             params.add(excludeAppointmentId);
         }
 
-        sql.append(" FOR UPDATE");
+        sql.append(" FOR UPDATE LIMIT 1");
 
-        Integer count = jdbcTemplate.queryForObject(sql.toString(), Integer.class, params.toArray());
-        return count != null && count > 0;
+        List<Long> ids = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> rs.getLong(1), params.toArray());
+        return !ids.isEmpty();
     }
 
     public Long save(Appointment a) {

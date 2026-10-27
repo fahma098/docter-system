@@ -57,7 +57,7 @@ public class AppointmentService {
 
     private final SecureRandom secureRandom = new SecureRandom();
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     public AppointmentDto createAppointment(Long patientId, CreateAppointmentRequest req, Long actorUserId) {
         // 1. Verify Patient
         Patient patient = patientRepository.findById(patientId)
@@ -83,11 +83,18 @@ public class AppointmentService {
             throw new BusinessValidationException("Appointments cannot be booked more than " + maxDays + " days in advance");
         }
 
-        // 4. Validate Minimum Advance Notice
-        int minAdvanceHours = Integer.parseInt(systemSettingRepository.getValueOrDefault("MIN_ADVANCE_BOOKING_HOURS", "2"));
+        // 4. Validate Minimum Advance Notice / Past Slots
+        int minAdvanceHours = Integer.parseInt(systemSettingRepository.getValueOrDefault("MIN_ADVANCE_BOOKING_HOURS", "0"));
         LocalDateTime requestedStart = appDate.atTime(req.getStartTime());
-        if (requestedStart.isBefore(LocalDateTime.now().plusHours(minAdvanceHours))) {
-            throw new BusinessValidationException("Appointments must be booked at least " + minAdvanceHours + " hours in advance");
+        if (minAdvanceHours > 0) {
+            if (requestedStart.isBefore(LocalDateTime.now().plusHours(minAdvanceHours))) {
+                throw new BusinessValidationException("Appointments must be booked at least " + minAdvanceHours + " hours in advance");
+            }
+        } else {
+            // Must not be in the past if booked for today
+            if (appDate.isEqual(today) && requestedStart.isBefore(LocalDateTime.now().minusMinutes(5))) {
+                throw new BusinessValidationException("The selected time slot (" + req.getStartTime() + ") has already passed for today. Please pick an upcoming slot.");
+            }
         }
 
         // 5. Validate Schedule & Working Hours
@@ -184,7 +191,7 @@ public class AppointmentService {
         return getAppointmentDtoById(appointmentId);
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     public AppointmentDto rescheduleAppointment(Long appointmentId, RescheduleRequest req, Long actorUserId, String actorRole) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with ID: " + appointmentId));

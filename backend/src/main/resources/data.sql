@@ -24,7 +24,7 @@ SELECT 'DEFAULT_APPOINTMENT_DURATION_MINUTES', '30', 'Standard appointment durat
 WHERE NOT EXISTS (SELECT 1 FROM system_settings WHERE setting_key = 'DEFAULT_APPOINTMENT_DURATION_MINUTES');
 
 INSERT INTO system_settings (setting_key, setting_value, description)
-SELECT 'MIN_ADVANCE_BOOKING_HOURS', '2', 'Minimum advance booking time before appointment'
+SELECT 'MIN_ADVANCE_BOOKING_HOURS', '0', 'Minimum advance booking time before appointment'
 WHERE NOT EXISTS (SELECT 1 FROM system_settings WHERE setting_key = 'MIN_ADVANCE_BOOKING_HOURS');
 
 INSERT INTO system_settings (setting_key, setting_value, description)

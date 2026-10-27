@@ -55,6 +55,9 @@ public class DatabaseInitializer implements ApplicationRunner {
     private AuditLogRepository auditLogRepository;
 
     @Autowired
+    private SystemSettingRepository systemSettingRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -77,6 +80,13 @@ public class DatabaseInitializer implements ApplicationRunner {
         }
 
         String defaultPasswordHash = passwordEncoder.encode("Password123!");
+
+        // Ensure default minimum advance booking hours is 0 (allow same-day bookings for available slots)
+        try {
+            systemSettingRepository.setSetting("MIN_ADVANCE_BOOKING_HOURS", "0", "Minimum advance booking notice in hours");
+        } catch (Exception e) {
+            log.warn("Could not update MIN_ADVANCE_BOOKING_HOURS setting: {}", e.getMessage());
+        }
 
         // 1. Ensure Specializations
         ensureSpecialization(1L, "Cardiology", "Heart health, hypertension, and cardiovascular diagnostic management.", "heart-pulse");
