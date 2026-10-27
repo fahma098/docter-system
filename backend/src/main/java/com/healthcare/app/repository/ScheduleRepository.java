@@ -47,7 +47,19 @@ public class ScheduleRepository {
     };
 
     public List<DoctorSchedule> findByDoctorId(Long doctorId) {
-        String sql = "SELECT * FROM doctor_schedules WHERE doctor_id = ? ORDER BY FIELD(working_day, 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY')";
+        String sql = """
+            SELECT * FROM doctor_schedules 
+            WHERE doctor_id = ? 
+            ORDER BY CASE working_day 
+                WHEN 'MONDAY' THEN 1 
+                WHEN 'TUESDAY' THEN 2 
+                WHEN 'WEDNESDAY' THEN 3 
+                WHEN 'THURSDAY' THEN 4 
+                WHEN 'FRIDAY' THEN 5 
+                WHEN 'SATURDAY' THEN 6 
+                WHEN 'SUNDAY' THEN 7 
+                ELSE 8 END
+        """;
         return jdbcTemplate.query(sql, rowMapper, doctorId);
     }
 

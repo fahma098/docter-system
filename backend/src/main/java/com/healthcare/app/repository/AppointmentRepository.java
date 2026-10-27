@@ -283,14 +283,15 @@ public class AppointmentRepository {
     }
 
     public BigDecimal sumDoctorMonthlyEarnings(Long doctorId, int year, int month) {
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.plusMonths(1);
         String sql = """
             SELECT COALESCE(SUM(consultation_fee_snapshot), 0) 
             FROM appointments 
             WHERE doctor_id = ? 
               AND appointment_status = 'COMPLETED'
-              AND YEAR(appointment_date) = ? 
-              AND MONTH(appointment_date) = ?
+              AND appointment_date >= ? AND appointment_date < ?
         """;
-        return jdbcTemplate.queryForObject(sql, BigDecimal.class, doctorId, year, month);
+        return jdbcTemplate.queryForObject(sql, BigDecimal.class, doctorId, Date.valueOf(start), Date.valueOf(end));
     }
 }
