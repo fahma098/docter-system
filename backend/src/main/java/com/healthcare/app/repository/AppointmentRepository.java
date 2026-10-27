@@ -198,7 +198,7 @@ public class AppointmentRepository {
         """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "appointment_id" });
             ps.setString(1, a.getAppointmentReference());
             ps.setLong(2, a.getPatientId());
             ps.setLong(3, a.getDoctorId());
@@ -212,7 +212,7 @@ public class AppointmentRepository {
             ps.setString(11, a.getDoctorInstructions());
             return ps;
         }, keyHolder);
-        return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        return KeyUtils.getGeneratedId(keyHolder, "appointment_id");
     }
 
     public void updateStatus(Long appointmentId, String status, String reason, String instructions) {

@@ -66,7 +66,7 @@ public class UserRepository {
         String sql = "INSERT INTO users (full_name, email, phone, password_hash, role, account_status) VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "user_id" });
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getPhone());
@@ -75,7 +75,7 @@ public class UserRepository {
             ps.setString(6, user.getAccountStatus() != null ? user.getAccountStatus() : "ACTIVE");
             return ps;
         }, keyHolder);
-        return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        return KeyUtils.getGeneratedId(keyHolder, "user_id");
     }
 
     public void updateAccountStatus(Long userId, String status) {

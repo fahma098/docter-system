@@ -56,14 +56,14 @@ public class SpecializationRepository {
         String sql = "INSERT INTO specializations (specialization_name, description, icon_name, active_status) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "specialization_id" });
             ps.setString(1, s.getSpecializationName());
             ps.setString(2, s.getDescription());
             ps.setString(3, s.getIconName() != null ? s.getIconName() : "stethoscope");
             ps.setBoolean(4, s.isActiveStatus());
             return ps;
         }, keyHolder);
-        return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        return KeyUtils.getGeneratedId(keyHolder, "specialization_id");
     }
 
     public void update(Specialization s) {

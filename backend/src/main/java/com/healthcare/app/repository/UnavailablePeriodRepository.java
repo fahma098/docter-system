@@ -69,7 +69,7 @@ public class UnavailablePeriodRepository {
         String sql = "INSERT INTO doctor_unavailable_periods (doctor_id, start_datetime, end_datetime, reason, approval_status) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "unavailable_id" });
             ps.setLong(1, p.getDoctorId());
             ps.setTimestamp(2, Timestamp.valueOf(p.getStartDatetime()));
             ps.setTimestamp(3, Timestamp.valueOf(p.getEndDatetime()));
@@ -77,7 +77,7 @@ public class UnavailablePeriodRepository {
             ps.setString(5, p.getApprovalStatus() != null ? p.getApprovalStatus() : "APPROVED");
             return ps;
         }, keyHolder);
-        return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        return KeyUtils.getGeneratedId(keyHolder, "unavailable_id");
     }
 
     public void updateApprovalStatus(Long unavailableId, String status) {

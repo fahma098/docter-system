@@ -47,7 +47,7 @@ public class PaymentRepository {
         String sql = "INSERT INTO payments (appointment_id, amount, payment_method, payment_status, transaction_reference) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "payment_id" });
             ps.setLong(1, payment.getAppointmentId());
             ps.setBigDecimal(2, payment.getAmount());
             ps.setString(3, payment.getPaymentMethod() != null ? payment.getPaymentMethod() : "CREDIT_CARD");
@@ -55,7 +55,7 @@ public class PaymentRepository {
             ps.setString(5, payment.getTransactionReference());
             return ps;
         }, keyHolder);
-        return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        return KeyUtils.getGeneratedId(keyHolder, "payment_id");
     }
 
     public void updateStatus(Long appointmentId, String status) {

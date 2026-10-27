@@ -47,7 +47,7 @@ public class NotificationRepository {
         String sql = "INSERT INTO notifications (user_id, title, message, type, read_status) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "notification_id" });
             ps.setLong(1, n.getUserId());
             ps.setString(2, n.getTitle());
             ps.setString(3, n.getMessage());
@@ -55,7 +55,7 @@ public class NotificationRepository {
             ps.setBoolean(5, n.isReadStatus());
             return ps;
         }, keyHolder);
-        return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        return KeyUtils.getGeneratedId(keyHolder, "notification_id");
     }
 
     public void markAllAsRead(Long userId) {

@@ -108,7 +108,7 @@ public class DoctorRepository {
         """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "doctor_id" });
             ps.setLong(1, doctor.getUserId());
             ps.setLong(2, doctor.getSpecializationId());
             ps.setString(3, doctor.getLicenseNumber());
@@ -121,7 +121,7 @@ public class DoctorRepository {
             ps.setString(10, doctor.getApprovalStatus() != null ? doctor.getApprovalStatus() : "APPROVED");
             return ps;
         }, keyHolder);
-        return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        return KeyUtils.getGeneratedId(keyHolder, "doctor_id");
     }
 
     public void update(Doctor d) {

@@ -79,7 +79,7 @@ public class ScheduleRepository {
         """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "schedule_id" });
             ps.setLong(1, schedule.getDoctorId());
             ps.setString(2, schedule.getWorkingDay().toUpperCase());
             ps.setTime(3, Time.valueOf(schedule.getStartTime()));
@@ -90,7 +90,7 @@ public class ScheduleRepository {
             ps.setBoolean(8, schedule.isActiveStatus());
             return ps;
         }, keyHolder);
-        return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        return KeyUtils.getGeneratedId(keyHolder, "schedule_id");
     }
 
     public void update(DoctorSchedule s) {

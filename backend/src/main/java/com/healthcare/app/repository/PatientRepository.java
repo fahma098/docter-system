@@ -81,7 +81,7 @@ public class PatientRepository {
         String sql = "INSERT INTO patients (user_id, date_of_birth, gender, blood_group, address, emergency_contact) VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "patient_id" });
             ps.setLong(1, patient.getUserId());
             ps.setDate(2, patient.getDateOfBirth() != null ? Date.valueOf(patient.getDateOfBirth()) : null);
             ps.setString(3, patient.getGender());
@@ -90,7 +90,7 @@ public class PatientRepository {
             ps.setString(6, patient.getEmergencyContact());
             return ps;
         }, keyHolder);
-        return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        return KeyUtils.getGeneratedId(keyHolder, "patient_id");
     }
 
     public void update(Patient patient) {
