@@ -7,10 +7,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -18,6 +22,9 @@ import java.time.LocalTime;
 public class DatabaseInitializer implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseInitializer.class);
+
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     private UserRepository userRepository;
@@ -40,6 +47,21 @@ public class DatabaseInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         log.info("Initializing Healthcare System security and baseline accounts...");
+
+        // Auto-apply PostgreSQL schema if running against PostgreSQL
+        try (Connection conn = dataSource.getConnection()) {
+            String dbProduct = conn.getMetaData().getDatabaseProductName().toLowerCase();
+            if (dbProduct.contains("postgres")) {
+                log.info("Detected PostgreSQL database. Ensuring PostgreSQL schema is applied...");
+                ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+                populator.setContinueOnError(true);
+                populator.addScript(new ClassPathResource("schema_postgres.sql"));
+                populator.execute(dataSource);
+                log.info("PostgreSQL schema verified and ready.");
+            }
+        } catch (Exception e) {
+            log.warn("PostgreSQL schema auto-detection check: {}", e.getMessage());
+        }
 
         String defaultPasswordHash = passwordEncoder.encode("Password123!");
 
