@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Dashboard - Doctor Availability & Scheduling System</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <span>Aura Health - Doctor Portal</span>
+      </a>
+
+      <ul class="navbar-nav">
+        <li><a href="doctor-dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li><a href="verify-receipt.html" class="nav-link">Verify Receipt</a></li>
+      </ul>
+
+      <div class="navbar-actions" id="nav-auth-actions"></div>
+    </div>
+  </nav>
+
+  <main style="padding: 36px 0 64px;">
+    <div class="container">
+
+      <!-- Doctor Profile Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:28px;">
+        <div>
+          <span style="font-size:12px;font-weight:700;color:var(--healthcare-teal);text-transform:uppercase;letter-spacing:0.05em;">Doctor Workspace</span>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:2px;">
+            <h1 id="doc-welcome-title" style="font-size:26px;font-weight:800;color:var(--text-main);">Dr. Doctor Name</h1>
+            <span id="doc-spec-badge" class="doctor-spec" style="font-size:12px;">Specialization</span>
+          </div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-top:4px;">Manage patient queues, progress consultation states, and configure working schedule.</p>
+        </div>
+      </div>
+
+      <!-- Workload Statistics -->
+      <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));">
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-icon-blue">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div class="stat-info">
+            <span id="stat-today" class="stat-value">0</span>
+            <span class="stat-label">Today's Total</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-icon-green">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </div>
+          <div class="stat-info">
+            <span id="stat-completed-today" class="stat-value">0</span>
+            <span class="stat-label">Completed Today</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-icon-amber">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+          </div>
+          <div class="stat-info">
+            <span id="stat-pending" class="stat-value">0</span>
+            <span class="stat-label">Pending Review</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-icon-teal">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          </div>
+          <div class="stat-info">
+            <span id="stat-upcoming" class="stat-value">0</span>
+            <span class="stat-label">Upcoming Week</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-icon-blue">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          </div>
+          <div class="stat-info">
+            <span id="stat-total-patients" class="stat-value">0</span>
+            <span class="stat-label">Unique Patients</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper stat-icon-green">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div class="stat-info">
+            <span id="stat-earnings" class="stat-value">$0.00</span>
+            <span class="stat-label">Month Revenue</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Doctor Tabs -->
+      <div class="tabs">
+        <button type="button" class="tab-btn doctor-tab-btn active" data-target="panel-today-queue">Today's Clinical Queue</button>
+        <button type="button" class="tab-btn doctor-tab-btn" data-target="panel-upcoming-queue">Upcoming Appointments</button>
+        <button type="button" class="tab-btn doctor-tab-btn" data-target="panel-schedule">Working Hours & Breaks</button>
+        <button type="button" class="tab-btn doctor-tab-btn" data-target="panel-leave">Time Off / Leave Request</button>
+      </div>
+
+      <!-- Tab 1: Today's Clinical Queue -->
+      <div id="panel-today-queue" class="tab-content-panel">
+        <div id="today-queue-list">
+          <div class="skeleton-card" style="height:110px;margin-bottom:12px;"></div>
+          <div class="skeleton-card" style="height:110px;"></div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Upcoming Appointments -->
+      <div id="panel-upcoming-queue" class="tab-content-panel" style="display:none;">
+        <div id="upcoming-queue-list">
+          <!-- Populated via API -->
+        </div>
+      </div>
+
+      <!-- Tab 3: Working Hours & Breaks -->
+      <div id="panel-schedule" class="tab-content-panel" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title" style="font-size:16px;">Configured Weekly Working Hours</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Working Day</th>
+                  <th>Hours (Start - End)</th>
+                  <th>Break Interval</th>
+                  <th>Slot Duration</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Time Off / Leave Requests -->
+      <div id="panel-leave" class="tab-content-panel" style="display:none;">
+        <div class="card" style="max-width:600px;">
+          <div class="card-header">
+            <h3 class="card-title" style="font-size:16px;">Register Leave / Unavailable Time Window</h3>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">
+              Submitting a leave request automatically blocks your availability slot generator so patients cannot book during this period.
+            </p>
+            <form id="leave-request-form">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                  <label class="form-label">Leave Start Date & Time *</label>
+                  <input type="datetime-local" id="leave-start" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Leave End Date & Time *</label>
+                  <input type="datetime-local" id="leave-end" class="form-control" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Reason for Absence</label>
+                <input type="text" id="leave-reason" class="form-control" placeholder="e.g. Medical conference, Personal leave" required>
+              </div>
+
+              <button type="submit" class="btn btn-teal btn-sm">Submit Leave & Block Schedule</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Complete Consultation Modal -->
+  <div class="modal-backdrop" id="complete-modal">
+    <div class="modal" style="max-width:520px;">
+      <div class="modal-header">
+        <h3 class="card-title" style="font-size:16px;color:var(--healthcare-teal);">Complete Consultation</h3>
+        <button type="button" class="modal-close" id="complete-modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--text-main);margin-bottom:14px;">
+          Mark consultation as completed for patient <strong id="complete-patient-name">Patient Name</strong>.
+        </p>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Doctor Clinical Instructions & Medical Advice</label>
+          <textarea id="doctor-instructions-input" class="form-control" rows="4" placeholder="Enter follow-up instructions, prescription notes, or diet advice for the patient..."></textarea>
+          <span class="form-helper">These instructions will be visible in the patient's record and updated receipt.</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline btn-sm" id="complete-modal-cancel">Cancel</button>
+        <button type="button" class="btn btn-teal btn-sm" id="complete-submit-btn">Complete & Save Record</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/doctor.js"></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura Health - Doctor Availability & Scheduling System</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <span>Aura Health</span>
+      </a>
+
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="doctors.html" class="nav-link">Find Doctors</a></li>
+        <li><a href="booking.html" class="nav-link">Book Appointment</a></li>
+        <li><a href="verify-receipt.html" class="nav-link">Verify Receipt</a></li>
+      </ul>
+
+      <div class="navbar-actions" id="nav-auth-actions">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Register</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="container">
+      <div class="hero-badge">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        Certified Healthcare Specialists & Real-Time Booking
+      </div>
+      <h1 class="hero-title">Discover Trusted Doctors & <span>Schedule Instant Appointments</span></h1>
+      <p class="hero-subtitle">
+        Access certified medical experts, review live consultation schedules, reserve double-booking-proof slots, and receive official PDF appointment receipts.
+      </p>
+
+      <!-- Search Box Card -->
+      <div class="search-box-card">
+        <div class="search-field">
+          <input type="text" id="hero-search-query" class="form-control" placeholder="Search doctor name, condition, or keyword...">
+        </div>
+        <div class="search-field" style="max-width:260px;">
+          <select id="hero-spec-select" class="form-select">
+            <option value="">All Specializations</option>
+          </select>
+        </div>
+        <button id="hero-search-btn" class="btn btn-primary">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          Search Doctors
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Medical Specializations -->
+  <section style="padding: 48px 0;">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;">
+        <div>
+          <span style="font-size:12px;font-weight:700;color:var(--healthcare-teal);text-transform:uppercase;letter-spacing:0.05em;">Departments</span>
+          <h2 style="font-size:24px;font-weight:800;color:var(--text-main);margin-top:4px;">Medical Specializations</h2>
+        </div>
+        <a href="doctors.html" style="font-size:13px;font-weight:600;">View All Doctors &rarr;</a>
+      </div>
+
+      <div class="spec-grid" id="landing-spec-grid">
+        <!-- Dynamically Populated -->
+        <div class="skeleton-card" style="height:120px;"></div>
+        <div class="skeleton-card" style="height:120px;"></div>
+        <div class="skeleton-card" style="height:120px;"></div>
+        <div class="skeleton-card" style="height:120px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Verified Doctors -->
+  <section style="padding: 32px 0 64px;">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;">
+        <div>
+          <span style="font-size:12px;font-weight:700;color:var(--primary-brand);text-transform:uppercase;letter-spacing:0.05em;">Certified Staff</span>
+          <h2 style="font-size:24px;font-weight:800;color:var(--text-main);margin-top:4px;">Available Doctors Today</h2>
+        </div>
+        <a href="doctors.html" class="btn btn-outline btn-sm">Browse All Specialists</a>
+      </div>
+
+      <div class="doctor-grid" id="landing-doctor-grid">
+        <!-- Populated via API -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Features / Workflow -->
+  <section style="background-color:#FFFFFF;border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);padding:64px 0;">
+    <div class="container">
+      <div style="text-align:center;max-width:600px;margin:0 auto 48px;">
+        <span style="font-size:12px;font-weight:700;color:var(--healthcare-teal);text-transform:uppercase;letter-spacing:0.05em;">How It Works</span>
+        <h2 style="font-size:28px;font-weight:800;color:var(--text-main);margin-top:6px;">Simple, Transparent Healthcare Access</h2>
+        <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;">Booking healthcare consultations should be effortless and secure.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:24px;">
+        <div class="card" style="padding:28px 24px;text-align:center;">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--surface-light-blue);color:var(--primary-brand);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">1. Select Specialist</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Filter certified doctors by specialization, medical credentials, and consultation fees.</p>
+        </div>
+
+        <div class="card" style="padding:28px 24px;text-align:center;">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--surface-light-teal);color:var(--healthcare-teal);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          </div>
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">2. Pick Available Slot</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Browse live calendar availability calculated using the doctor's real working schedule and breaks.</p>
+        </div>
+
+        <div class="card" style="padding:28px 24px;text-align:center;">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--surface-light-blue);color:var(--primary-brand);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          </div>
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">3. Instant Atomic Lock</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Database transaction locking prevents double booking and locks your time slot immediately.</p>
+        </div>
+
+        <div class="card" style="padding:28px 24px;text-align:center;">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--surface-light-teal);color:var(--healthcare-teal);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          </div>
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">4. Download PDF Pass</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Download an official clinic confirmation pass with an embedded verifiable QR code.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background-color:#FFFFFF;border-top:1px solid var(--border-color);padding:36px 0;margin-top:auto;">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="brand-icon" style="width:30px;height:30px;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <span style="font-weight:700;font-size:15px;">Aura Health Medical Specialist Center</span>
+      </div>
+      <p style="font-size:12px;color:var(--text-secondary);">
+        &copy; 2026 Aura Health Platform. Enterprise Healthcare Scheduling Architecture.
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Load Specializations for landing
+      try {
+        const specs = await Api.get('/specializations');
+        const specGrid = document.getElementById('landing-spec-grid');
+        const select = document.getElementById('hero-spec-select');
+
+        if (specGrid) {
+          specGrid.innerHTML = '';
+          specs.forEach(s => {
+            const card = document.createElement('div');
+            card.className = 'spec-card';
+            card.onclick = () => window.location.href = `doctors.html?specId=${s.specializationId}`;
+            card.innerHTML = `
+              <div class="spec-icon-box">
+                <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+              </div>
+              <span class="spec-name">${escapeHtml(s.specializationName)}</span>
+            `;
+            specGrid.appendChild(card);
+
+            if (select) {
+              const opt = document.createElement('option');
+              opt.value = s.specializationId;
+              opt.textContent = s.specializationName;
+              select.appendChild(opt);
+            }
+          });
+        }
+
+        // Load Featured Doctors
+        const doctors = await Api.get('/doctors?approvedOnly=true');
+        const docGrid = document.getElementById('landing-doctor-grid');
+        if (docGrid) {
+          docGrid.innerHTML = '';
+          doctors.slice(0, 4).forEach(doc => {
+            const card = document.createElement('div');
+            card.className = 'doctor-card';
+            card.innerHTML = `
+              <div class="doctor-card-top">
+                <img src="${doc.profileImageUrl || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200'}" class="doctor-avatar" alt="${escapeHtml(doc.fullName)}">
+                <div class="doctor-card-info">
+                  <h3 class="doctor-name">${escapeHtml(doc.fullName)}</h3>
+                  <span class="doctor-spec">${escapeHtml(doc.specializationName)}</span>
+                  <div class="doctor-qual">${escapeHtml(doc.qualifications)}</div>
+                </div>
+              </div>
+              <div class="doctor-card-body">
+                <p class="doctor-bio">${escapeHtml(doc.professionalBio || 'Certified clinical specialist with extensive experience.')}</p>
+                <div class="doctor-meta-row">
+                  <span>Experience: <strong>${doc.experienceYears} Years</strong></span>
+                  <span>Fee: <strong class="doctor-fee">$${Number(doc.consultationFee).toFixed(2)}</strong></span>
+                </div>
+              </div>
+              <div class="doctor-card-footer">
+                <a href="booking.html?doctorId=${doc.doctorId}" class="btn btn-primary btn-sm" style="flex:1;">Book Consultation</a>
+                <a href="doctors.html?search=${encodeURIComponent(doc.fullName)}" class="btn btn-outline btn-sm">View Profile</a>
+              </div>
+            `;
+            docGrid.appendChild(card);
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      // Hero search trigger
+      document.getElementById('hero-search-btn')?.addEventListener('click', () => {
+        const query = document.getElementById('hero-search-query').value.trim();
+        const specId = document.getElementById('hero-spec-select').value;
+        window.location.href = `doctors.html?search=${encodeURIComponent(query)}&specId=${specId}`;
+      });
+    });
+  </script>
+</body>
+</html>

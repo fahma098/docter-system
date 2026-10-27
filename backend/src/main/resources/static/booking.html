@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Appointment - Doctor Availability & Scheduling System</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <span>Aura Health</span>
+      </a>
+
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="doctors.html" class="nav-link">Find Doctors</a></li>
+        <li><a href="booking.html" class="nav-link active">Book Appointment</a></li>
+        <li><a href="verify-receipt.html" class="nav-link">Verify Receipt</a></li>
+      </ul>
+
+      <div class="navbar-actions" id="nav-auth-actions"></div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="booking-container">
+
+      <!-- Left Column: Step-by-Step Scheduling Wizard -->
+      <div>
+        <div style="margin-bottom: 24px;">
+          <span style="font-size:12px;font-weight:700;color:var(--healthcare-teal);text-transform:uppercase;letter-spacing:0.05em;">Interactive Scheduling</span>
+          <h1 style="font-size:26px;font-weight:800;color:var(--text-main);margin-top:2px;">Schedule Your Doctor Consultation</h1>
+          <p style="font-size:13px;color:var(--text-secondary);">Select your doctor, pick an open date and real-time slot, and confirm your booking.</p>
+        </div>
+
+        <!-- Step 1: Select Doctor -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h3 class="card-title" style="font-size:16px;">1. Choose Doctor & Specialization</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-group" style="margin-bottom: 0;">
+              <select id="doctor-select" class="form-select">
+                <option value="">Loading medical faculty...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Interactive Date Picker -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h3 class="card-title" style="font-size:16px;">2. Select Consultation Date</h3>
+          </div>
+          <div class="card-body">
+            <div class="calendar-widget">
+              <div class="calendar-header">
+                <button type="button" id="cal-prev-btn" class="btn btn-outline btn-sm">&larr; Previous</button>
+                <h4 id="cal-month-title" style="font-size:15px;font-weight:700;color:var(--text-main);">Current Month</h4>
+                <button type="button" id="cal-next-btn" class="btn btn-outline btn-sm">Next &rarr;</button>
+              </div>
+
+              <div class="calendar-days-row">
+                <div class="day-header">Sun</div>
+                <div class="day-header">Mon</div>
+                <div class="day-header">Tue</div>
+                <div class="day-header">Wed</div>
+                <div class="day-header">Thu</div>
+                <div class="day-header">Fri</div>
+                <div class="day-header">Sat</div>
+              </div>
+
+              <div id="calendar-grid" class="calendar-grid">
+                <!-- Days populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Available Time Slot Picker -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h3 class="card-title" style="font-size:16px;">3. Choose Available Time Slot</h3>
+            <span style="font-size:12px;color:var(--text-secondary);">Live backend availability check</span>
+          </div>
+          <div class="card-body">
+            <div id="slots-loading" style="display:none;text-align:center;padding:20px;">
+              <span class="skeleton-text" style="width:50%;margin:0 auto 10px;"></span>
+              <p style="font-size:13px;color:var(--text-secondary);">Querying doctor schedule & locking constraints...</p>
+            </div>
+
+            <div id="slots-container" class="slots-grid">
+              <p style="font-size:13px;color:var(--text-secondary);grid-column: 1/-1;">
+                Please select a doctor and consultation date above to display available time slots.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Consultation Details -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h3 class="card-title" style="font-size:16px;">4. Appointment Type & Reason</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="appointment-type" class="form-label">Consultation Mode</label>
+              <select id="appointment-type" class="form-select">
+                <option value="IN_PERSON">In-Person Consultation (Clinic Visit)</option>
+                <option value="VIDEO_CONSULTATION">Telehealth / Video Consultation</option>
+                <option value="FOLLOW_UP">Follow-Up Review Consultation</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="patient-notes" class="form-label">Primary Symptoms / Reason for Visit (Optional)</label>
+              <textarea id="patient-notes" class="form-control" rows="3" placeholder="Briefly describe what you would like to discuss with the doctor..."></textarea>
+              <span class="form-helper">This note will be made available to your consulting physician prior to your visit.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Booking Summary Card -->
+      <div>
+        <div class="booking-summary-card">
+          <h3 style="font-size:17px;font-weight:800;color:var(--text-main);margin-bottom:16px;">Appointment Summary</h3>
+
+          <div id="summary-doc-preview" class="summary-doctor-preview">
+            <p style="font-size:13px;color:var(--text-secondary);">Select a doctor to begin</p>
+          </div>
+
+          <div class="summary-item-row">
+            <span class="summary-item-label">Consultation Date</span>
+            <span id="summary-date-value" class="summary-item-value">Not Selected</span>
+          </div>
+
+          <div class="summary-item-row">
+            <span class="summary-item-label">Scheduled Time Slot</span>
+            <span id="summary-time-value" class="summary-item-value">Not Selected</span>
+          </div>
+
+          <div class="summary-item-row">
+            <span class="summary-item-label">Consultation Mode</span>
+            <span id="summary-type-value" class="summary-item-value">In-Person</span>
+          </div>
+
+          <div class="summary-item-row">
+            <span class="summary-item-label">Est. Duration</span>
+            <span class="summary-item-value">30 Minutes</span>
+          </div>
+
+          <div class="summary-item-row">
+            <span class="summary-item-label">Doctor Fee</span>
+            <span id="summary-fee-amount" class="summary-item-value">$0.00</span>
+          </div>
+
+          <div class="summary-item-row">
+            <span class="summary-item-label">Booking & Pass Generation</span>
+            <span class="summary-item-value" style="color:var(--status-success);">Free</span>
+          </div>
+
+          <div class="summary-total-row">
+            <span class="summary-total-label">Total Amount</span>
+            <span id="summary-total-amount" class="summary-total-value">$0.00</span>
+          </div>
+
+          <button type="button" id="confirm-booking-btn" class="btn btn-primary" style="width:100%;margin-bottom:14px;" disabled>
+            Confirm & Schedule Appointment
+          </button>
+
+          <p style="font-size:11px;color:var(--text-secondary);text-align:center;line-height:1.4;">
+            🔒 By confirming, your slot is locked atomically in the clinic database. Free cancellation or rescheduling is permitted up to 4 hours in advance.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Booking Success Modal -->
+  <div class="modal-backdrop" id="booking-success-modal">
+    <div class="modal" style="max-width:520px;text-align:center;">
+      <div class="modal-body" style="padding:36px 28px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--surface-light-teal);color:var(--healthcare-teal);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg width="34" height="34" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+
+        <h2 style="font-size:22px;font-weight:800;color:var(--text-main);">Appointment Confirmed!</h2>
+        <p style="font-size:13px;color:var(--text-secondary);margin-top:6px;">
+          Your medical appointment has been scheduled and locked in the clinic calendar.
+        </p>
+
+        <div style="background-color:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:18px;margin:24px 0;text-align:left;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+            <span style="color:var(--text-secondary);">Appointment Ref:</span>
+            <strong id="modal-app-ref" style="color:var(--primary-brand);font-family:monospace;font-size:14px;">DOC-20261027-XXXX</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+            <span style="color:var(--text-secondary);">Consulting Doctor:</span>
+            <strong id="modal-app-doc">Dr. Sarah Jenkins</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;">
+            <span style="color:var(--text-secondary);">Date & Time:</span>
+            <strong id="modal-app-time">Tomorrow at 10:00 AM</strong>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button type="button" id="modal-download-receipt-btn" class="btn btn-primary">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Download Official PDF Receipt & Pass
+          </button>
+          <button type="button" id="modal-preview-receipt-btn" class="btn btn-outline">
+            Preview Receipt Document
+          </button>
+          <a href="patient-dashboard.html" class="btn btn-secondary">
+            Go to Patient Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/booking.js"></script>
+</body>
+</html>

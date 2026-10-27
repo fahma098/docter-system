@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Appointment Receipt - Aura Health</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="background-color: var(--bg-main);">
+
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <span>Aura Health</span>
+      </a>
+
+      <ul class="navbar-nav">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="doctors.html" class="nav-link">Find Doctors</a></li>
+        <li><a href="booking.html" class="nav-link">Book Appointment</a></li>
+      </ul>
+
+      <div class="navbar-actions" id="nav-auth-actions"></div>
+    </div>
+  </nav>
+
+  <main style="padding: 48px 0 64px;">
+    <div class="container" style="max-width: 600px;">
+      <div class="card" style="padding: 32px; text-align: center;">
+
+        <div style="width:56px;height:56px;border-radius:50%;background:var(--surface-light-teal);color:var(--healthcare-teal);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+        </div>
+
+        <h1 style="font-size: 22px; font-weight: 800; color: var(--text-main);">Appointment Pass Verification</h1>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; margin-bottom: 24px;">
+          Official Aura Health cryptographic validation check
+        </p>
+
+        <!-- Search / Ref input -->
+        <div style="display:flex; gap:10px; margin-bottom: 24px;">
+          <input type="text" id="verify-ref-input" class="form-control" placeholder="Enter Appointment Reference (e.g. DOC-20261028-A101)">
+          <button id="verify-btn" class="btn btn-primary btn-sm">Verify Pass</button>
+        </div>
+
+        <div id="verify-result-box" style="display:none; text-align:left; background:var(--bg-main); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px;">
+          <!-- Result rendered here -->
+        </div>
+
+        <div id="verify-error-box" style="display:none; padding:16px; border-radius:var(--radius-md); background:var(--status-error-bg); color:var(--status-error); font-size:13px; text-align:center;">
+          Appointment reference not found or invalid.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get('ref');
+      if (ref) {
+        document.getElementById('verify-ref-input').value = ref;
+        performVerification(ref);
+      }
+
+      document.getElementById('verify-btn').addEventListener('click', () => {
+        const val = document.getElementById('verify-ref-input').value.trim();
+        if (val) performVerification(val);
+      });
+    });
+
+    async function performVerification(ref) {
+      const resBox = document.getElementById('verify-result-box');
+      const errBox = document.getElementById('verify-error-box');
+
+      resBox.style.display = 'none';
+      errBox.style.display = 'none';
+
+      try {
+        const data = await Api.get(`/appointments/verify/${encodeURIComponent(ref)}`);
+        resBox.innerHTML = `
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--status-success-bg);color:var(--status-success);display:flex;align-items:center;justify-content:center;font-weight:700;">✓</div>
+            <strong style="color:var(--status-success);font-size:15px;">Valid Official Appointment Document</strong>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;">
+            <div>
+              <span style="color:var(--text-secondary);display:block;font-size:11px;">REFERENCE</span>
+              <strong>${escapeHtml(data.reference)}</strong>
+            </div>
+            <div>
+              <span style="color:var(--text-secondary);display:block;font-size:11px;">STATUS</span>
+              ${Api.getStatusBadge(data.status)}
+            </div>
+            <div>
+              <span style="color:var(--text-secondary);display:block;font-size:11px;">DOCTOR</span>
+              <strong>${escapeHtml(data.doctorName)}</strong>
+            </div>
+            <div>
+              <span style="color:var(--text-secondary);display:block;font-size:11px;">SPECIALIZATION</span>
+              <strong>${escapeHtml(data.specialization)}</strong>
+            </div>
+            <div>
+              <span style="color:var(--text-secondary);display:block;font-size:11px;">SCHEDULED DATE</span>
+              <strong>${escapeHtml(data.appointmentDate)}</strong>
+            </div>
+            <div>
+              <span style="color:var(--text-secondary);display:block;font-size:11px;">TIME SLOT</span>
+              <strong>${escapeHtml(data.timeSlot)}</strong>
+            </div>
+          </div>
+        `;
+        resBox.style.display = 'block';
+      } catch (err) {
+        errBox.textContent = 'Verification check failed: ' + err.message;
+        errBox.style.display = 'block';
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>

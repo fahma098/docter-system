@@ -1,0 +1,25 @@
+# Maven target and build artifacts
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE and Editor files
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs and environment
+*.log
+.env
+.DS_Store
+Thumbs.db
