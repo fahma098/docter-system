@@ -5,9 +5,15 @@
  * ====================================================================
  */
 
-const API_BASE = window.location.origin.includes(':8080')
-  ? `${window.location.origin}/api`
-  : 'http://localhost:8080/api';
+// Automatically use current origin /api in production (Render, AWS, custom domain, etc.)
+// or fallback to localhost:8080 when running through standalone static servers (Live Server, file://)
+const isLocalDevServer = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+  && window.location.port !== '' && window.location.port !== '8080';
+const isFileProtocol = window.location.protocol === 'file:';
+
+const API_BASE = (isLocalDevServer || isFileProtocol)
+  ? 'http://localhost:8080/api'
+  : `${window.location.origin}/api`;
 
 const Api = {
   getToken() {

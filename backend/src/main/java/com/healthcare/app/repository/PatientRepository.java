@@ -83,7 +83,11 @@ public class PatientRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[] { "patient_id" });
             ps.setLong(1, patient.getUserId());
-            ps.setDate(2, patient.getDateOfBirth() != null ? Date.valueOf(patient.getDateOfBirth()) : null);
+            if (patient.getDateOfBirth() != null) {
+                ps.setDate(2, Date.valueOf(patient.getDateOfBirth()));
+            } else {
+                ps.setNull(2, java.sql.Types.DATE);
+            }
             ps.setString(3, patient.getGender());
             ps.setString(4, patient.getBloodGroup());
             ps.setString(5, patient.getAddress());
@@ -95,8 +99,9 @@ public class PatientRepository {
 
     public void update(Patient patient) {
         String sql = "UPDATE patients SET date_of_birth = ?, gender = ?, blood_group = ?, address = ?, emergency_contact = ? WHERE patient_id = ?";
+        Date dob = patient.getDateOfBirth() != null ? Date.valueOf(patient.getDateOfBirth()) : null;
         jdbcTemplate.update(sql,
-                patient.getDateOfBirth() != null ? Date.valueOf(patient.getDateOfBirth()) : null,
+                dob,
                 patient.getGender(),
                 patient.getBloodGroup(),
                 patient.getAddress(),

@@ -84,8 +84,16 @@ public class ScheduleRepository {
             ps.setString(2, schedule.getWorkingDay().toUpperCase());
             ps.setTime(3, Time.valueOf(schedule.getStartTime()));
             ps.setTime(4, Time.valueOf(schedule.getEndTime()));
-            ps.setTime(5, schedule.getBreakStartTime() != null ? Time.valueOf(schedule.getBreakStartTime()) : null);
-            ps.setTime(6, schedule.getBreakEndTime() != null ? Time.valueOf(schedule.getBreakEndTime()) : null);
+            if (schedule.getBreakStartTime() != null) {
+                ps.setTime(5, Time.valueOf(schedule.getBreakStartTime()));
+            } else {
+                ps.setNull(5, java.sql.Types.TIME);
+            }
+            if (schedule.getBreakEndTime() != null) {
+                ps.setTime(6, Time.valueOf(schedule.getBreakEndTime()));
+            } else {
+                ps.setNull(6, java.sql.Types.TIME);
+            }
             ps.setInt(7, schedule.getSlotDurationMinutes() > 0 ? schedule.getSlotDurationMinutes() : 30);
             ps.setBoolean(8, schedule.isActiveStatus());
             return ps;

@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLoginForm();
   setupRegisterForm();
   setupDemoPills();
+  setupQuickLoginButtons();
 });
 
 function setupNavbarAuth() {
@@ -35,7 +36,9 @@ function setupNavbarAuth() {
     document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
   } else {
     navActions.innerHTML = `
-      <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+      <a href="login.html" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:4px;border-color:var(--primary-brand);color:var(--primary-brand);">
+        <span>⚡ Demo Sign In</span>
+      </a>
       <a href="register.html" class="btn btn-primary btn-sm">Register</a>
     `;
   }
@@ -109,10 +112,14 @@ function setupRegisterForm() {
     const phone = document.getElementById('reg-phone').value.trim();
     const password = document.getElementById('reg-password').value;
     const confirmPassword = document.getElementById('reg-confirm-password').value;
-    const dateOfBirth = document.getElementById('reg-dob')?.value || null;
+    
+    const dobVal = document.getElementById('reg-dob')?.value?.trim();
+    const dateOfBirth = dobVal ? dobVal : null;
+    
     const gender = document.getElementById('reg-gender')?.value || null;
     const bloodGroup = document.getElementById('reg-blood')?.value || null;
-    const emergencyContact = document.getElementById('reg-emergency')?.value || null;
+    const address = document.getElementById('reg-address')?.value?.trim() || null;
+    const emergencyContact = document.getElementById('reg-emergency')?.value?.trim() || null;
 
     if (password !== confirmPassword) {
       showError('Passwords do not match. Please verify.');
@@ -121,7 +128,7 @@ function setupRegisterForm() {
 
     try {
       btn.disabled = true;
-      btn.innerHTML = `Creating Account...`;
+      btn.innerHTML = `<span class="spinner"></span> Creating Account...`;
 
       const payload = {
         fullName,
@@ -132,7 +139,8 @@ function setupRegisterForm() {
         dateOfBirth,
         gender,
         bloodGroup,
-        emergencyContact
+        emergencyContact,
+        address
       };
 
       const resp = await Api.post('/auth/register', payload);
@@ -155,6 +163,7 @@ function setupRegisterForm() {
     if (errorAlert) {
       errorAlert.textContent = msg;
       errorAlert.style.display = 'block';
+      errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
       Api.showToast(msg, 'error');
     }
@@ -174,6 +183,8 @@ function setupDemoPills() {
       const emailInput = document.getElementById('email');
       const passwordInput = document.getElementById('password');
 
+      if (!emailInput || !passwordInput) return;
+
       if (role === 'patient') {
         emailInput.value = 'patient.john@healthcare.com';
         passwordInput.value = 'Password123!';
@@ -186,6 +197,39 @@ function setupDemoPills() {
       }
     });
   });
+}
+
+function setupQuickLoginButtons() {
+  document.querySelectorAll('.quick-login-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = btn.dataset.email;
+      const password = btn.dataset.pwd || 'Password123!';
+      const redirect = btn.dataset.redirect;
+      await fastLogin(email, password, redirect);
+    });
+  });
+}
+
+async function fastLogin(email, password, redirectUrl) {
+  try {
+    Api.showToast(`Signing in as ${email}...`, 'info');
+    const resp = await Api.post('/auth/login', { email, password });
+    Api.setToken(resp.token);
+    Api.setUser(resp);
+    Api.showToast(`Welcome, ${resp.fullName}!`, 'success');
+    setTimeout(() => {
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      } else {
+        if (resp.role === 'DOCTOR') window.location.href = 'doctor-dashboard.html';
+        else if (resp.role === 'ADMIN') window.location.href = 'admin-dashboard.html';
+        else window.location.href = 'patient-dashboard.html';
+      }
+    }, 400);
+  } catch (err) {
+    Api.showToast(err.message || 'Demo login failed', 'error');
+  }
 }
 
 async function handleLogout() {

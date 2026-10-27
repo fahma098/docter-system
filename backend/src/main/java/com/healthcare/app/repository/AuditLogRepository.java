@@ -37,7 +37,19 @@ public class AuditLogRepository {
 
     public void log(Long actorUserId, String action, String entityType, String entityId, String details) {
         String sql = "INSERT INTO audit_logs (actor_user_id, action, entity_type, entity_id, details) VALUES (?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, actorUserId, action, entityType, entityId, details);
+        jdbcTemplate.update(connection -> {
+            java.sql.PreparedStatement ps = connection.prepareStatement(sql);
+            if (actorUserId != null) {
+                ps.setLong(1, actorUserId);
+            } else {
+                ps.setNull(1, java.sql.Types.BIGINT);
+            }
+            ps.setString(2, action);
+            ps.setString(3, entityType);
+            ps.setString(4, entityId);
+            ps.setString(5, details);
+            return ps;
+        });
     }
 
     public List<AuditLog> findRecent(int limit) {

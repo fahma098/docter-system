@@ -48,15 +48,38 @@
         </p>
       </div>
 
-      <!-- Quick Demo Credentials Selector -->
-      <div style="margin-bottom:18px;">
-        <span style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px;">
-          One-Click Demo Roles:
-        </span>
-        <div class="demo-pills">
-          <button type="button" class="demo-pill-btn active" data-role="patient">👤 Patient</button>
-          <button type="button" class="demo-pill-btn" data-role="doctor">🩺 Doctor</button>
-          <button type="button" class="demo-pill-btn" data-role="admin">🛡️ Administrator</button>
+      <!-- Quick Demo Credentials Box -->
+      <div style="background:var(--bg-main); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:14px; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:12px; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+            ⚡ Quick Demo Logins
+          </span>
+          <span style="font-size:11px; color:var(--text-secondary); background:var(--surface-white); padding:2px 8px; border-radius:12px; border:1px solid var(--border-color);">1-Click Instant Access</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+          <button type="button" class="btn btn-outline quick-login-btn" data-email="patient.john@healthcare.com" data-pwd="Password123!" data-redirect="patient-dashboard.html" style="font-size:12px; padding:10px 4px; text-align:center; flex-direction:column; gap:3px; display:flex; align-items:center; justify-content:center; background:#fff; border-color:var(--border-color);">
+            <span style="font-size:18px;">👤</span>
+            <strong style="color:var(--text-main); font-size:11px;">Patient</strong>
+            <span style="font-size:10px; color:var(--text-secondary);">John Miller</span>
+          </button>
+
+          <button type="button" class="btn btn-outline quick-login-btn" data-email="doctor.sarah@healthcare.com" data-pwd="Password123!" data-redirect="doctor-dashboard.html" style="font-size:12px; padding:10px 4px; text-align:center; flex-direction:column; gap:3px; display:flex; align-items:center; justify-content:center; background:#fff; border-color:var(--border-color);">
+            <span style="font-size:18px;">🩺</span>
+            <strong style="color:var(--text-main); font-size:11px;">Doctor</strong>
+            <span style="font-size:10px; color:var(--text-secondary);">Dr. Sarah</span>
+          </button>
+
+          <button type="button" class="btn btn-outline quick-login-btn" data-email="admin@healthcare.com" data-pwd="Password123!" data-redirect="admin-dashboard.html" style="font-size:12px; padding:10px 4px; text-align:center; flex-direction:column; gap:3px; display:flex; align-items:center; justify-content:center; background:#fff; border-color:var(--border-color);">
+            <span style="font-size:18px;">🛡️</span>
+            <strong style="color:var(--text-main); font-size:11px;">Admin</strong>
+            <span style="font-size:10px; color:var(--text-secondary);">Sys Admin</span>
+          </button>
+        </div>
+
+        <div style="margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-color); display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--text-secondary);">
+          <span>Default Password for all: <code style="color:var(--primary-brand); font-weight:700;">Password123!</code></span>
+          <span style="cursor:pointer; color:var(--primary-brand); font-weight:600;" onclick="document.getElementById('email').value='patient.john@healthcare.com';document.getElementById('password').value='Password123!';">Fill Inputs</span>
         </div>
       </div>
 

@@ -64,6 +64,25 @@
           Search Doctors
         </button>
       </div>
+
+      <!-- Instant Live Demo Bar -->
+      <div style="margin-top:20px; background:rgba(255,255,255,0.95); backdrop-filter:blur(8px); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:12px 18px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; box-shadow:var(--shadow-sm);">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="background:var(--primary-subtle); color:var(--primary-brand); font-size:11px; font-weight:800; padding:3px 8px; border-radius:12px; text-transform:uppercase;">⚡ Live Demo</span>
+          <span style="font-size:13px; font-weight:600; color:var(--text-main);">Try all 3 platform roles with 1-click instant login:</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline btn-sm quick-login-btn" data-email="patient.john@healthcare.com" data-pwd="Password123!" data-redirect="patient-dashboard.html" style="background:#fff; font-size:12px; font-weight:600;">
+            👤 Patient Portal
+          </button>
+          <button type="button" class="btn btn-outline btn-sm quick-login-btn" data-email="doctor.sarah@healthcare.com" data-pwd="Password123!" data-redirect="doctor-dashboard.html" style="background:#fff; font-size:12px; font-weight:600;">
+            🩺 Doctor Dashboard
+          </button>
+          <button type="button" class="btn btn-outline btn-sm quick-login-btn" data-email="admin@healthcare.com" data-pwd="Password123!" data-redirect="admin-dashboard.html" style="background:#fff; font-size:12px; font-weight:600;">
+            🛡️ Admin Console
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
