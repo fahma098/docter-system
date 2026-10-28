@@ -40,11 +40,24 @@ async function loadPatientDashboard() {
     document.getElementById('stat-pending').textContent = data.pendingCount;
     document.getElementById('stat-cancelled').textContent = data.cancelledCount;
 
+    // Render Live OPD Queue Radar if patient has an appointment
+    const cardNameEl = document.getElementById('vault-card-name');
+    if (cardNameEl && user) cardNameEl.textContent = user.fullName;
+
+    const todayStr = new Date().toISOString().substring(0, 10);
+    const todayApp = (data.upcomingAppointments || []).find(a => a.appointmentDate === todayStr) || (data.upcomingAppointments || [])[0];
+    if (todayApp && window.OpdQueueManager) {
+      OpdQueueManager.renderPatientRadar('patient-opd-radar-container', todayApp);
+    }
+
     // Upcoming Appointments List
     renderUpcomingAppointments(data.upcomingAppointments);
 
     // Past Appointments List
     renderPastAppointments(data.pastAppointments);
+
+    // Render Health Vault Prescriptions
+    renderHealthVaultPrescriptions(data.pastAppointments || []);
   } catch (err) {
     Api.showToast('Failed to load dashboard: ' + err.message, 'error');
   }
@@ -98,14 +111,20 @@ function renderUpcomingAppointments(appointments) {
           </div>
         </div>
 
-        <div class="action-btn-group">
+        <div class="action-btn-group" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button type="button" class="btn btn-teal btn-sm join-telehealth-btn"
+            data-id="${app.appointmentId}"
+            data-docname="${escapeHtml(app.doctorName)}"
+            data-ref="${escapeHtml(app.appointmentReference)}"
+            title="Join Secure HD Tele-OPD Video Clinic">
+            📹 Join Tele-OPD
+          </button>
           <a href="${receiptPreviewUrl}" target="_blank" class="btn btn-outline btn-sm" title="Preview PDF Document">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-            Preview Pass
+            Pass
           </a>
           <a href="${receiptDownloadUrl}" class="btn btn-secondary btn-sm" title="Download Receipt PDF">
-            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            PDF Receipt
+            PDF
           </a>
           <button class="btn btn-outline btn-sm reschedule-btn" data-id="${app.appointmentId}" data-docid="${app.doctorId}" data-docname="${escapeHtml(app.doctorName)}">
             Reschedule
@@ -118,6 +137,25 @@ function renderUpcomingAppointments(appointments) {
     `;
 
     container.appendChild(card);
+  });
+
+  // Attach Telehealth listeners
+  document.querySelectorAll('.join-telehealth-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const user = Api.getUser();
+      if (window.TelemedicineSuite) {
+        TelemedicineSuite.startCall({
+          appointmentId: btn.dataset.id,
+          patientName: user ? user.fullName : 'Patient',
+          doctorName: btn.dataset.docname.replace(/^Dr\.\s*/i, ''),
+          role: 'PATIENT',
+          appointmentRef: btn.dataset.ref,
+          onEnded: (sec) => {
+            Api.showToast(`Consultation call ended (${Math.floor(sec/60)}m ${sec%60}s).`, 'info');
+          }
+        });
+      }
+    });
   });
 
   // Attach Reschedule & Cancel Listeners
@@ -169,6 +207,61 @@ function renderPastAppointments(appointments) {
         </div>
       </div>
     `;
+    container.appendChild(card);
+  });
+}
+
+function renderHealthVaultPrescriptions(appointments) {
+  const container = document.getElementById('vault-prescriptions-list');
+  if (!container) return;
+
+  const withPrescriptions = (appointments || []).filter(a => a.doctorInstructions && a.doctorInstructions.trim().length > 0);
+
+  if (withPrescriptions.length === 0) {
+    container.innerHTML = `
+      <div style="padding:20px;text-align:center;color:var(--text-secondary);font-size:13px;">
+        <span style="font-size:24px;display:block;margin-bottom:6px;">📋</span>
+        No digital prescriptions filed yet. When your doctor completes a consultation with an electronic Rx, it will be securely archived here.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = '';
+  withPrescriptions.forEach(app => {
+    const card = document.createElement('div');
+    card.style.background = '#F8FAFC';
+    card.style.border = '1px solid var(--border-color)';
+    card.style.borderRadius = 'var(--radius-md)';
+    card.style.padding = '14px 16px';
+    card.style.marginBottom = '12px';
+
+    const token = Api.getToken();
+    const receiptDownloadUrl = `${API_BASE}/appointments/${app.appointmentId}/receipt?token=${token}`;
+
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:8px;">
+        <div>
+          <strong style="color:var(--healthcare-teal);font-size:14px;">Dr. ${escapeHtml(app.doctorName)}</strong>
+          <span style="font-size:11px;color:var(--text-secondary);margin-left:6px;">(${escapeHtml(app.specializationName)})</span>
+          <div style="font-size:11.5px;color:var(--text-secondary);margin-top:2px;">
+            Consultation Date: <strong>${Api.formatDate(app.appointmentDate)}</strong> • Ref: <code>${escapeHtml(app.appointmentReference)}</code>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <a href="${receiptDownloadUrl}" class="btn btn-outline btn-sm" title="Download Official Signed PDF Pass">
+            📥 Download Rx PDF
+          </a>
+          <a href="booking.html?doctorId=${app.doctorId}" class="btn btn-primary btn-sm">
+            Book Follow-up
+          </a>
+        </div>
+      </div>
+      <div style="background:#FFFFFF;border:1px solid #E2E8F0;border-radius:8px;padding:12px;font-size:12px;color:var(--text-main);white-space:pre-wrap;line-height:1.5;max-height:160px;overflow-y:auto;font-family:inherit;">
+${escapeHtml(app.doctorInstructions)}
+      </div>
+    `;
+
     container.appendChild(card);
   });
 }

@@ -68,25 +68,29 @@ function renderTodayQueue(appointments) {
   }
 
   container.innerHTML = '';
-  appointments.forEach(app => {
+  appointments.forEach((app, idx) => {
     const card = document.createElement('div');
     card.className = 'card';
     card.style.marginBottom = '14px';
 
     const token = Api.getToken();
     const receiptPreviewUrl = `${API_BASE}/appointments/${app.appointmentId}/receipt/preview?token=${token}`;
+    const tokenNum = idx + 1;
 
     card.innerHTML = `
       <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
         <div style="display:flex;align-items:center;gap:14px;">
-          <div style="width:48px;height:48px;border-radius:10px;background:var(--surface-light-teal);color:var(--healthcare-teal);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;">
-            ${app.startTime.substring(0, 5)}
+          <div style="width:54px;height:54px;border-radius:10px;background:var(--surface-light-teal);color:var(--healthcare-teal);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <span style="font-weight:800;font-size:14px;line-height:1;">${app.startTime.substring(0, 5)}</span>
+            <span style="font-size:9.5px;font-weight:700;color:#047857;margin-top:2px;">Token #${tokenNum}</span>
           </div>
           <div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px;">
               <span style="font-weight:700;font-size:15px;color:var(--text-main);">${escapeHtml(app.patientName)}</span>
               ${Api.getStatusBadge(app.appointmentStatus)}
-              <span style="font-size:12px;color:var(--text-secondary);">${escapeHtml(app.appointmentType)}</span>
+              <span class="badge ${app.appointmentType === 'VIDEO_CONSULTATION' ? 'badge-in-progress' : ''}" style="font-size:11px;">
+                ${app.appointmentType === 'VIDEO_CONSULTATION' ? '📹 Tele-Health' : '🏥 In-Person OPD'}
+              </span>
             </div>
             <div style="font-size:12px;color:var(--text-secondary);">
               <span>📞 ${escapeHtml(app.patientPhone || 'N/A')}</span> | 
@@ -96,9 +100,28 @@ function renderTodayQueue(appointments) {
           </div>
         </div>
 
-        <div class="action-btn-group">
+        <div class="action-btn-group" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button type="button" class="btn btn-outline btn-sm open-wa-btn" 
+            data-patient="${escapeHtml(app.patientName)}"
+            data-phone="${escapeHtml(app.patientPhone || '')}"
+            data-date="${app.appointmentDate}"
+            data-time="${Api.formatTime(app.startTime)}"
+            data-ref="${escapeHtml(app.appointmentReference)}"
+            data-token="${tokenNum}"
+            title="Dispatch WhatsApp Alert">
+            📲 WhatsApp
+          </button>
+
+          <button type="button" class="btn btn-outline btn-sm open-telehealth-btn"
+            data-id="${app.appointmentId}"
+            data-patient="${escapeHtml(app.patientName)}"
+            data-ref="${escapeHtml(app.appointmentReference)}"
+            title="Start HD Video Telemedicine Room">
+            📹 Tele-OPD
+          </button>
+
           ${renderDoctorStatusButtons(app)}
-          <a href="${receiptPreviewUrl}" target="_blank" class="btn btn-outline btn-sm">View Pass</a>
+          <a href="${receiptPreviewUrl}" target="_blank" class="btn btn-outline btn-sm">Pass</a>
         </div>
       </div>
     `;
@@ -161,11 +184,54 @@ function attachQueueActionListeners() {
 
   document.querySelectorAll('.open-complete-modal-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      activeCompleteAppId = btn.dataset.id;
-      document.getElementById('complete-patient-name').textContent = btn.dataset.patient;
-      document.getElementById('complete-modal').classList.add('active');
+      openCompleteModal(btn.dataset.id, btn.dataset.patient);
     });
   });
+
+  document.querySelectorAll('.open-wa-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const u = Api.getUser();
+      if (window.WhatsAppAlertDispatcher) {
+        WhatsAppAlertDispatcher.openModal({
+          patientName: btn.dataset.patient,
+          phone: btn.dataset.phone,
+          doctorName: u ? u.fullName.replace(/^Dr\.\s*/i, '') : 'Specialist',
+          specName: 'OPD Specialist',
+          date: btn.dataset.date,
+          time: btn.dataset.time,
+          ref: btn.dataset.ref,
+          token: btn.dataset.token
+        });
+      }
+    });
+  });
+
+  document.querySelectorAll('.open-telehealth-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const u = Api.getUser();
+      if (window.TelemedicineSuite) {
+        TelemedicineSuite.startCall({
+          appointmentId: btn.dataset.id,
+          patientName: btn.dataset.patient,
+          doctorName: u ? u.fullName.replace(/^Dr\.\s*/i, '') : 'Consultant',
+          role: 'DOCTOR',
+          appointmentRef: btn.dataset.ref,
+          onEnded: (sec) => {
+            Api.showToast(`Telemedicine session concluded (${Math.floor(sec/60)}m ${sec%60}s).`, 'info');
+          }
+        });
+      }
+    });
+  });
+}
+
+function openCompleteModal(id, patientName) {
+  activeCompleteAppId = id;
+  const nameEl = document.getElementById('complete-patient-name');
+  if (nameEl) nameEl.textContent = patientName;
+  const condInput = document.getElementById('ai-rx-condition-input');
+  if (condInput) condInput.value = '';
+  document.getElementById('complete-modal')?.classList.add('active');
 }
 
 function renderUpcomingQueue(appointments) {
@@ -251,8 +317,42 @@ function setupCompleteConsultationModal() {
     activeCompleteAppId = null;
   };
 
-  closeBtn?.addEventListener('click', close);
-  cancelBtn?.addEventListener('click', close);
+  const aiRxBtn = document.getElementById('ai-generate-rx-btn');
+  aiRxBtn?.addEventListener('click', async () => {
+    const condInput = document.getElementById('ai-rx-condition-input');
+    const condition = condInput ? condInput.value.trim() : '';
+    const user = Api.getUser();
+    const docName = user ? user.fullName : 'Consulting Doctor';
+
+    try {
+      aiRxBtn.disabled = true;
+      aiRxBtn.innerHTML = '✨ Generating...';
+
+      const res = await fetch(`${API_BASE}/ai/generate-prescription`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          condition: condition || 'General Health Checkup & Evaluation',
+          doctorName: docName,
+          specialization: 'Kerala Medical Council Specialist'
+        })
+      });
+
+      const json = await res.json();
+      if (!res.ok || json.success === false) {
+        throw new Error(json.message || 'Failed to generate prescription');
+      }
+
+      const rxText = json.data?.formattedRx || '';
+      document.getElementById('doctor-instructions-input').value = rxText;
+      Api.showToast('Clinical Rx & Orders generated successfully!', 'success');
+    } catch (err) {
+      Api.showToast(err.message, 'error');
+    } finally {
+      aiRxBtn.disabled = false;
+      aiRxBtn.innerHTML = '✨ Auto-Generate Rx';
+    }
+  });
 
   submitBtn?.addEventListener('click', async () => {
     if (!activeCompleteAppId) return;
@@ -317,3 +417,7 @@ function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
+
+window.DoctorApp = {
+  openCompleteModal
+};

@@ -250,6 +250,37 @@ public class PdfReceiptService {
             document.add(new Paragraph(" "));
 
             // ==========================================
+            // 5B. CLINICAL PRESCRIPTION & ORDERS (If present)
+            // ==========================================
+            if (app.getDoctorInstructions() != null && !app.getDoctorInstructions().trim().isEmpty()) {
+                PdfPTable rxTable = new PdfPTable(1);
+                rxTable.setWidthPercentage(100);
+
+                PdfPCell rxCell = new PdfPCell();
+                rxCell.setPadding(10);
+                rxCell.setBorderColor(PRIMARY_BLUE);
+                rxCell.setBorderWidth(1.2f);
+                rxCell.setBackgroundColor(new Color(248, 250, 252));
+
+                Paragraph rxHeader = new Paragraph("CLINICAL PRESCRIPTION & PHYSICIAN'S ORDERS (Rx)", sectionTitleFont);
+                rxHeader.setFont(FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, PRIMARY_BLUE));
+
+                Paragraph rxBody = new Paragraph(app.getDoctorInstructions().trim(), valueFont);
+                rxBody.setSpacingBefore(4);
+
+                Paragraph rxSign = new Paragraph("Attending Physician: " + app.getDoctorName() + " (" + app.getSpecializationName() + ")\nAura Multispeciality Hospital, Marine Drive, Kochi | Digitally Authenticated", smallMutedFont);
+                rxSign.setSpacingBefore(6);
+
+                rxCell.addElement(rxHeader);
+                rxCell.addElement(rxBody);
+                rxCell.addElement(rxSign);
+                rxTable.addCell(rxCell);
+
+                document.add(rxTable);
+                document.add(new Paragraph(" "));
+            }
+
+            // ==========================================
             // 6. INSTRUCTIONS & CLINIC POLICY FOOTER
             // ==========================================
             PdfPTable footerTable = new PdfPTable(1);
@@ -265,7 +296,7 @@ public class PdfReceiptService {
                     "1. Please arrive at the clinic reception 10 minutes prior to your scheduled time slot.\n" +
                     "2. Present this document on your mobile device or physical printout with the QR verification code.\n" +
                     "3. Rescheduling or cancellation is permitted up to 4 hours prior to your consultation.\n" +
-                    "4. For emergency care, please call 911 or visit your nearest emergency room immediately.",
+                    "4. For 24/7 casualty emergency care, call hospital casualty at +91 484 288 9000 or dial 108.",
                     smallMutedFont
             );
             pRules.setSpacingBefore(4);

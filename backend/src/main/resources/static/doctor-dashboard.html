@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/telemedicine.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -205,10 +206,25 @@
           Mark consultation as completed for patient <strong id="complete-patient-name">Patient Name</strong>.
         </p>
 
+        <div style="background:var(--surface-light-teal);border:1px solid #99F6E4;border-radius:var(--radius-md);padding:10px 12px;margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:12px;font-weight:700;color:var(--healthcare-teal);display:flex;align-items:center;gap:6px;">
+              ✨ Smart AI Prescription Generator (Rx)
+            </span>
+            <span style="font-size:10px;color:var(--text-secondary);">ICD-10 & Kerala Formulary</span>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="ai-rx-condition-input" class="form-control" style="font-size:12px;background:#fff;" placeholder="Diagnosis / Condition (e.g. Hypertension, Viral Bronchitis, Eczema)...">
+            <button type="button" id="ai-generate-rx-btn" class="btn btn-teal btn-sm" style="flex-shrink:0;font-size:11px;font-weight:700;">
+              ✨ Auto-Generate Rx
+            </button>
+          </div>
+        </div>
+
         <div class="form-group" style="margin-bottom:0;">
-          <label class="form-label">Doctor Clinical Instructions & Medical Advice</label>
-          <textarea id="doctor-instructions-input" class="form-control" rows="4" placeholder="Enter follow-up instructions, prescription notes, or diet advice for the patient..."></textarea>
-          <span class="form-helper">These instructions will be visible in the patient's record and updated receipt.</span>
+          <label class="form-label">Doctor Clinical Instructions & Medical Prescription (Rx)</label>
+          <textarea id="doctor-instructions-input" class="form-control" rows="8" placeholder="Enter follow-up instructions, prescription notes, or diet advice for the patient..."></textarea>
+          <span class="form-helper">This clinical prescription will be permanently embedded in the patient's official PDF receipt and medical vault.</span>
         </div>
       </div>
       <div class="modal-footer">
@@ -220,6 +236,7 @@
 
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/telemedicine.js"></script>
   <script src="js/doctor.js"></script>
 </body>
 </html>

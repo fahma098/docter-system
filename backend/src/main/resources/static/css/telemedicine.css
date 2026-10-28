@@ -1,0 +1,397 @@
+/**
+ * ====================================================================
+ * AURA HEALTH - TELEMEDICINE & DIGITAL CLINIC ROOM (telemedicine.css)
+ * Premium Healthcare SaaS - Light Theme HD Video Consultation Suite
+ * ====================================================================
+ */
+
+/* Fullscreen Telehealth Modal Overlay */
+.telehealth-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: teleFadeIn 0.25s ease-out;
+}
+
+@keyframes teleFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.telehealth-window {
+  width: 100%;
+  max-width: 1100px;
+  height: 90vh;
+  max-height: 740px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  border: 1px solid #CBD5E1;
+}
+
+/* Header */
+.telehealth-header {
+  padding: 14px 20px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.telehealth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.telehealth-live-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #FEF2F2;
+  color: #B91C1C;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid #FCA5A5;
+}
+
+.telehealth-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #EF4444;
+  animation: telePulse 1.5s infinite;
+}
+
+@keyframes telePulse {
+  0% { transform: scale(0.9); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+  100% { transform: scale(0.9); opacity: 1; }
+}
+
+.telehealth-timer {
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #172033;
+  background: #F1F5F9;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+}
+
+.telehealth-security-badge {
+  font-size: 11px;
+  color: #0F766E;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Main Body: Stage + Sidebar */
+.telehealth-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  background: #0B1329;
+}
+
+/* Video Stage */
+.telehealth-stage {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 16px;
+  position: relative;
+  background: #0F172A;
+}
+
+.telehealth-video-card {
+  position: relative;
+  background: #1E293B;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.telehealth-video-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.telehealth-simulated-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #94A3B8;
+}
+
+.telehealth-feed-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  color: #FFFFFF;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Patient Vitals HUD Overlay */
+.telehealth-vitals-overlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-width: 90%;
+}
+
+.tele-vital-pill {
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #FFFFFF;
+  font-size: 11.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tele-vital-val {
+  font-weight: 800;
+  color: #38BDF8;
+  font-family: monospace;
+}
+
+/* In-Call Chat Sidebar */
+.telehealth-sidebar {
+  width: 320px;
+  background: #FFFFFF;
+  border-left: 1px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+}
+
+.telehealth-sidebar.hidden {
+  display: none;
+}
+
+.tele-sidebar-header {
+  padding: 12px 16px;
+  background: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #172033;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tele-chat-stream {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #F8FAFC;
+}
+
+.tele-chat-msg {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  max-width: 90%;
+}
+
+.tele-chat-msg.mine {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  color: #1E3A8A;
+  align-self: flex-end;
+}
+
+.tele-chat-msg.theirs {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  color: #172033;
+  align-self: flex-start;
+}
+
+.tele-chat-form {
+  padding: 10px;
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  display: flex;
+  gap: 6px;
+}
+
+.tele-chat-input {
+  flex: 1;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  outline: none;
+}
+
+/* Bottom Controls Bar */
+.telehealth-controls {
+  padding: 12px 24px;
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tele-ctrl-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tele-ctrl-btn:hover {
+  background: #F1F5F9;
+  transform: translateY(-1px);
+}
+
+.tele-ctrl-btn.active-off {
+  background: #FEE2E2;
+  border-color: #F87171;
+  color: #B91C1C;
+}
+
+.tele-ctrl-end {
+  background: #DC2626;
+  border-color: #DC2626;
+  color: #FFFFFF;
+  padding: 0 18px;
+  border-radius: 9999px;
+  width: auto;
+  font-weight: 700;
+  font-size: 13px;
+  gap: 8px;
+}
+
+.tele-ctrl-end:hover {
+  background: #B91C1C;
+  color: #FFFFFF;
+}
+
+/* WhatsApp Reminder Modal */
+.wa-modal-card {
+  max-width: 500px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #E2E8F0;
+}
+
+.wa-preview-box {
+  background: #DCF8C6;
+  border: 1px solid #A7F3D0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: #064E3B;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  margin: 14px 0;
+}
+
+/* OPD Live Queue Banner */
+.opd-radar-card {
+  background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+  border: 1px solid #86EFAC;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.08);
+}
+
+.opd-radar-pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #16A34A;
+  animation: opdPulse 1.8s infinite;
+}
+
+@keyframes opdPulse {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+}
+
+.opd-token-chip {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  padding: 8px 14px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.opd-token-num {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0F766E;
+  display: block;
+  line-height: 1;
+}
+
+.opd-token-sub {
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748B;
+  text-transform: uppercase;
+}

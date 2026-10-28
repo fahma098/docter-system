@@ -170,12 +170,41 @@ function renderRecentAppointments(appointments) {
       <td>${Api.getStatusBadge(app.appointmentStatus)}</td>
       <td>${Api.formatCurrency(app.consultationFee)}</td>
       <td>
-        <a href="${API_BASE}/appointments/${app.appointmentId}/receipt/preview?token=${Api.getToken()}" target="_blank" class="btn btn-outline btn-sm">
-          Pass
-        </a>
+        <div style="display:flex;gap:6px;">
+          <button type="button" class="btn btn-outline btn-sm admin-wa-btn"
+            data-patient="${escapeHtml(app.patientName)}"
+            data-doctor="${escapeHtml(app.doctorName)}"
+            data-spec="${escapeHtml(app.specializationName || 'Specialist')}"
+            data-date="${app.appointmentDate}"
+            data-time="${Api.formatTime(app.startTime)}"
+            data-ref="${escapeHtml(app.appointmentReference)}"
+            title="Send WhatsApp Alert">
+            📲
+          </button>
+          <a href="${API_BASE}/appointments/${app.appointmentId}/receipt/preview?token=${Api.getToken()}" target="_blank" class="btn btn-outline btn-sm">
+            Pass
+          </a>
+        </div>
       </td>
     `;
     tbody.appendChild(tr);
+  });
+
+  document.querySelectorAll('.admin-wa-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (window.WhatsAppAlertDispatcher) {
+        WhatsAppAlertDispatcher.openModal({
+          patientName: btn.dataset.patient,
+          phone: '9847012345',
+          doctorName: btn.dataset.doctor.replace(/^Dr\.\s*/i, ''),
+          specName: btn.dataset.spec,
+          date: btn.dataset.date,
+          time: btn.dataset.time,
+          ref: btn.dataset.ref,
+          token: '1'
+        });
+      }
+    });
   });
 }
 
@@ -418,17 +447,54 @@ async function loadAllAppointmentsManagement() {
         <td>${Api.getStatusBadge(app.appointmentStatus)}</td>
         <td>${Api.formatCurrency(app.consultationFee)}</td>
         <td>
-          <a href="${API_BASE}/appointments/${app.appointmentId}/receipt/preview?token=${Api.getToken()}" target="_blank" class="btn btn-outline btn-sm">
-            PDF
-          </a>
+          <div style="display:flex;gap:6px;">
+            <button type="button" class="btn btn-outline btn-sm admin-wa-btn"
+              data-patient="${escapeHtml(app.patientName)}"
+              data-doctor="${escapeHtml(app.doctorName)}"
+              data-spec="${escapeHtml(app.specializationName || 'Specialist')}"
+              data-date="${app.appointmentDate}"
+              data-time="${Api.formatTime(app.startTime)}"
+              data-ref="${escapeHtml(app.appointmentReference)}"
+              title="Send WhatsApp Alert">
+              📲
+            </button>
+            <a href="${API_BASE}/appointments/${app.appointmentId}/receipt/preview?token=${Api.getToken()}" target="_blank" class="btn btn-outline btn-sm">
+              PDF
+            </a>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('.admin-wa-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (window.WhatsAppAlertDispatcher) {
+          WhatsAppAlertDispatcher.openModal({
+            patientName: btn.dataset.patient,
+            phone: '9847012345',
+            doctorName: btn.dataset.doctor.replace(/^Dr\.\s*/i, ''),
+            specName: btn.dataset.spec,
+            date: btn.dataset.date,
+            time: btn.dataset.time,
+            ref: btn.dataset.ref,
+            token: '1'
+          });
+        }
+      });
     });
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="8" style="color:var(--status-error);text-align:center;">Failed: ${err.message}</td></tr>`;
   }
 }
+
+// Bind Export CSV button once DOM loaded
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btn-export-csv')?.addEventListener('click', () => {
+    const token = Api.getToken();
+    window.open(`${API_BASE}/admin/reports/csv?token=${token}`, '_blank');
+  });
+});
 
 // --- Audit Logs ---
 async function loadAuditLogs() {

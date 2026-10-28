@@ -39,4 +39,41 @@ public class AiAssistantController {
         Map<String, Object> result = aiAssistantService.processHealthQuery(msg);
         return ResponseEntity.ok(ApiResponse.ok(result));
     }
+
+    public static class PrescriptionRequest {
+        private String condition;
+        private String patientNotes;
+        private String doctorImpression;
+        private String doctorName;
+        private String specialization;
+
+        public PrescriptionRequest() {}
+
+        public String getCondition() { return condition; }
+        public void setCondition(String condition) { this.condition = condition; }
+
+        public String getPatientNotes() { return patientNotes; }
+        public void setPatientNotes(String patientNotes) { this.patientNotes = patientNotes; }
+
+        public String getDoctorImpression() { return doctorImpression; }
+        public void setDoctorImpression(String doctorImpression) { this.doctorImpression = doctorImpression; }
+
+        public String getDoctorName() { return doctorName; }
+        public void setDoctorName(String doctorName) { this.doctorName = doctorName; }
+
+        public String getSpecialization() { return specialization; }
+        public void setSpecialization(String specialization) { this.specialization = specialization; }
+    }
+
+    @PostMapping("/generate-prescription")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> generatePrescription(@RequestBody(required = false) PrescriptionRequest req) {
+        String cond = req != null ? req.getCondition() : "";
+        String pNotes = req != null ? req.getPatientNotes() : "";
+        String docImp = req != null ? req.getDoctorImpression() : "";
+        String docName = req != null ? req.getDoctorName() : "Doctor";
+        String spec = req != null ? req.getSpecialization() : "Consultant";
+
+        Map<String, Object> rx = aiAssistantService.generateSmartPrescription(cond, pNotes, docImp, docName, spec);
+        return ResponseEntity.ok(ApiResponse.ok(rx));
+    }
 }
