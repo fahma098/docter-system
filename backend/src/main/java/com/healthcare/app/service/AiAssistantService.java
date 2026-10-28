@@ -273,4 +273,157 @@ public class AiAssistantService {
 
         return result;
     }
+
+    public Map<String, Object> analyzeLabReport(String testType, String rawText) {
+        Map<String, Object> analysis = new HashMap<>();
+        String type = (testType != null ? testType.toUpperCase() : "CBC");
+        String text = (rawText != null ? rawText.toLowerCase() : "");
+
+        List<Map<String, Object>> biomarkers = new ArrayList<>();
+        String summary;
+        String actionRecommendation;
+        Long targetSpecId = 6L; // Default General Medicine
+
+        if (type.contains("LIPID") || text.contains("cholesterol") || text.contains("lipid")) {
+            type = "Lipid Profile & Cardiovascular Screen";
+            targetSpecId = 1L; // Cardiology
+
+            biomarkers.add(createBiomarker("Total Cholesterol", 238, "mg/dL", "< 200", "HIGH", "Borderline high risk for coronary plaque deposition."));
+            biomarkers.add(createBiomarker("LDL Cholesterol ('Bad')", 152, "mg/dL", "< 100", "HIGH", "Elevated LDL requires dietary modification and statin evaluation."));
+            biomarkers.add(createBiomarker("HDL Cholesterol ('Good')", 42, "mg/dL", "> 40", "NORMAL", "Adequate protective HDL level."));
+            biomarkers.add(createBiomarker("Triglycerides", 195, "mg/dL", "< 150", "HIGH", "Mild hypertriglyceridemia; reduce dietary sugars and refined carbohydrates."));
+
+            summary = "Your lipid markers indicate mild-to-moderate dyslipidemia with elevated Total and LDL cholesterol levels. Cardiovascular risk profile is elevated.";
+            actionRecommendation = "Schedule a consultation with Cardiology Specialist (Dr. Ananya Menon) for dietary counselling and lipid-lowering management.";
+        } else if (type.contains("DIABETES") || type.contains("GLUCOSE") || text.contains("sugar") || text.contains("hba1c")) {
+            type = "Diabetic Metabolic Panel & Glycemic Index";
+            targetSpecId = 6L; // General Medicine
+
+            biomarkers.add(createBiomarker("Fasting Blood Sugar (FBS)", 138, "mg/dL", "70 - 100", "HIGH", "Fasting blood sugar is in the diabetic threshold (> 126 mg/dL)."));
+            biomarkers.add(createBiomarker("Post-Prandial Blood Sugar (PPBS)", 186, "mg/dL", "< 140", "HIGH", "Elevated post-meal glycemic spike indicates insulin resistance."));
+            biomarkers.add(createBiomarker("HbA1c (Glycated Hemoglobin)", 7.2, "%", "< 5.7", "HIGH", "3-month average glucose indicates early Stage-2 Type 2 Diabetes Mellitus."));
+            biomarkers.add(createBiomarker("Estimated Average Glucose (eAG)", 160, "mg/dL", "< 117", "HIGH", "Consistent elevation across past 90 days."));
+
+            summary = "Your glycemic biomarkers exceed normal fasting and post-prandial ranges, consistent with early Type-2 Diabetes Mellitus.";
+            actionRecommendation = "Schedule an evaluation with General Physician (Dr. Suresh Kumar) for lifestyle therapy, blood pressure check, and oral hypoglycemic therapy.";
+        } else if (type.contains("THYROID") || text.contains("tsh") || text.contains("thyroid")) {
+            type = "Thyroid Function Panel (TFT)";
+            targetSpecId = 6L;
+
+            biomarkers.add(createBiomarker("TSH (Thyroid Stimulating Hormone)", 6.8, "uIU/mL", "0.4 - 4.2", "HIGH", "Elevated TSH indicates compensatory pituitary stimulation; suggestive of Subclinical Hypothyroidism."));
+            biomarkers.add(createBiomarker("Free T4 (Thyroxine)", 1.05, "ng/dL", "0.8 - 1.8", "NORMAL", "Circulating free thyroxine remains within baseline limits."));
+            biomarkers.add(createBiomarker("Total T3", 110, "ng/dL", "80 - 200", "NORMAL", "Normal triiodothyronine hormone level."));
+
+            summary = "Elevated TSH with normal free T4 suggests Subclinical Hypothyroidism, often linked with mild lethargy, weight gain, or cold intolerance.";
+            actionRecommendation = "Review with General Physician (Dr. Suresh Kumar) to check Thyroid Antibodies (Anti-TPO) and evaluate thyroxine replacement.";
+        } else {
+            // CBC / Hemogram default
+            type = "Complete Blood Count (CBC) & Hemogram";
+            targetSpecId = 6L;
+
+            biomarkers.add(createBiomarker("Hemoglobin (Hb)", 10.4, "g/dL", "13.0 - 17.0", "LOW", "Mild microcytic hypochromic anemia; iron stores evaluation recommended."));
+            biomarkers.add(createBiomarker("Total Leukocyte Count (WBC)", 8400, "/cumm", "4000 - 11000", "NORMAL", "Immune white cell count is within healthy baseline limits."));
+            biomarkers.add(createBiomarker("Platelet Count", 235000, "/cumm", "150000 - 450000", "NORMAL", "Platelet clotting capacity is intact."));
+            biomarkers.add(createBiomarker("Erythrocyte Sedimentation Rate (ESR)", 24, "mm/1st hr", "0 - 15", "HIGH", "Mild systemic inflammatory marker elevation."));
+
+            summary = "Your hemogram reveals mild anemia with slightly elevated inflammatory markers (ESR), while platelet and immune leukocyte counts are healthy.";
+            actionRecommendation = "Consult with General Physician (Dr. Suresh Kumar) for dietary iron enhancement, Serum Ferritin check, and symptomatic evaluation.";
+        }
+
+        analysis.put("reportType", type);
+        analysis.put("biomarkers", biomarkers);
+        analysis.put("clinicalSummary", summary);
+        analysis.put("actionRecommendation", actionRecommendation);
+        analysis.put("recommendedSpecializationId", targetSpecId);
+        analysis.put("recommendedDoctors", getDoctorsBySpec(targetSpecId));
+
+        return analysis;
+    }
+
+    private Map<String, Object> createBiomarker(String name, double value, String unit, String normalRange, String status, String note) {
+        Map<String, Object> b = new HashMap<>();
+        b.put("name", name);
+        b.put("value", value);
+        b.put("unit", unit);
+        b.put("normalRange", normalRange);
+        b.put("status", status); // NORMAL, HIGH, LOW
+        b.put("clinicalNote", note);
+        return b;
+    }
+
+    public Map<String, Object> checkDrugSafety(List<String> medications, String patientAllergies) {
+        Map<String, Object> result = new HashMap<>();
+        List<Map<String, String>> warnings = new ArrayList<>();
+        boolean isSafe = true;
+
+        String combinedMeds = (medications != null ? String.join(" ", medications) : "").toLowerCase();
+        String allergies = (patientAllergies != null ? patientAllergies.toLowerCase() : "");
+
+        // 1. Allergy Cross-Reaction Check
+        if (allergies.contains("penicillin") || allergies.contains("amox")) {
+            if (combinedMeds.contains("amox") || combinedMeds.contains("augmentin") || combinedMeds.contains("clav") || combinedMeds.contains("penicillin")) {
+                isSafe = false;
+                warnings.add(createWarning("CRITICAL ALLERGY ALERT", "Patient has documented Penicillin allergy. Prescribed Amoxicillin/Augmentin poses high risk of anaphylaxis or severe urticaria. Substitute with Azithromycin or Ciprofloxacin."));
+            }
+        }
+        if (allergies.contains("sulfa") || allergies.contains("sulfonamide")) {
+            if (combinedMeds.contains("bactrim") || combinedMeds.contains("sulfamethoxazole") || combinedMeds.contains("septran")) {
+                isSafe = false;
+                warnings.add(createWarning("CRITICAL ALLERGY ALERT", "Patient is allergic to Sulfa medications. Prescribed Septran/Bactrim must be immediately discontinued."));
+            }
+        }
+
+        // 2. High-Risk Drug-Drug Interactions
+        if ((combinedMeds.contains("aspirin") || combinedMeds.contains("ecosprin")) &&
+            (combinedMeds.contains("aceclofenac") || combinedMeds.contains("zerodol") || combinedMeds.contains("ibuprofen") || combinedMeds.contains("naproxen"))) {
+            isSafe = false;
+            warnings.add(createWarning("HIGH GI BLEEDING RISK", "Combining Aspirin with NSAIDs (Aceclofenac/Naproxen) synergistically increases gastric mucosal ulceration and bleeding risk. Add a proton pump inhibitor (Pan 40) or separate administration by 4 hours."));
+        }
+
+        if (combinedMeds.contains("telmisartan") && (combinedMeds.contains("ramipril") || combinedMeds.contains("enalapril"))) {
+            isSafe = false;
+            warnings.add(createWarning("HYPERKALEMIA & HYPOTENSION WARNING", "Dual renin-angiotensin-aldosterone blockade (ARB + ACE-inhibitor) is not recommended due to acute kidney injury and hyperkalemia risks."));
+        }
+
+        if (combinedMeds.contains("paracetamol") && combinedMeds.contains("dolo") && combinedMeds.contains("calpol")) {
+            warnings.add(createWarning("ACETAMINOPHEN OVERDOSE ALERT", "Multiple paracetamol-containing formulations detected. Total daily dose must not exceed 4,000 mg (4g) to prevent hepatotoxicity."));
+        }
+
+        result.put("isSafe", isSafe);
+        result.put("safetyScore", isSafe ? 98 : (warnings.size() > 1 ? 45 : 70));
+        result.put("statusLabel", isSafe ? "SAFETY CLEARED" : "CLINICAL CAUTION REQUIRED");
+        result.put("warnings", warnings);
+        result.put("checkedMedicationsCount", medications != null ? medications.size() : 0);
+        return result;
+    }
+
+    private Map<String, String> createWarning(String title, String description) {
+        Map<String, String> w = new HashMap<>();
+        w.put("severity", "HIGH");
+        w.put("title", title);
+        w.put("description", description);
+        return w;
+    }
+
+    public Map<String, Object> getHospitalLiveTelemetry() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("hospitalName", "Aura Multispeciality Hospital & Research Centre, Kochi");
+        stats.put("icuBedsAvailable", 6);
+        stats.put("icuBedsTotal", 24);
+        stats.put("traumaBaysReady", 3);
+        stats.put("traumaBaysTotal", 5);
+        stats.put("cathLabStatus", "STANDBY (ACTIVE)");
+        stats.put("activeAmbulances", 4);
+        stats.put("avgOpdWaitMinutes", 12);
+
+        Map<String, Integer> bloodBank = new LinkedHashMap<>();
+        bloodBank.put("A+", 18);
+        bloodBank.put("B+", 12);
+        bloodBank.put("O+", 28);
+        bloodBank.put("AB+", 6);
+        bloodBank.put("O-", 4);
+        stats.put("bloodBankUnits", bloodBank);
+
+        return stats;
+    }
 }

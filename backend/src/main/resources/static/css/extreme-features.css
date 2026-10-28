@@ -1,0 +1,321 @@
+/**
+ * ====================================================================
+ * AURA HEALTH - EXTREME CLINICAL & PATIENT FEATURES (extreme-features.css)
+ * 3D/Vector Body Symptom Locator, AI Lab Analyzer, Hospital Operations HUD
+ * ====================================================================
+ */
+
+/* ==================================================================
+   1. LIVE HOSPITAL OPERATIONS TELEMETRY TICKER
+   ================================================================== */
+.hospital-ticker-wrap {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--border-color);
+  padding: 8px 0;
+  font-size: 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.hospital-ticker-content {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.ticker-item strong {
+  color: var(--text-main);
+}
+
+.ticker-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #15803D;
+  display: inline-block;
+  animation: tickPulse 1.5s infinite;
+}
+
+@keyframes tickPulse {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* ==================================================================
+   2. INTERACTIVE HUMAN ANATOMY SYMPTOM LOCATOR
+   ================================================================== */
+.anatomy-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  margin-top: 32px;
+}
+
+.anatomy-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .anatomy-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.anatomy-body-viewer {
+  background: linear-gradient(180deg, #F0FDFA 0%, #EFF6FF 100%);
+  border: 1px solid #CBD5E1;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.body-zone-btn {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1E293B;
+  cursor: pointer;
+  margin: 4px 0;
+  width: 100%;
+  max-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.15s ease;
+}
+
+.body-zone-btn:hover,
+.body-zone-btn.active {
+  background: #2563EB;
+  border-color: #2563EB;
+  color: #FFFFFF;
+  transform: translateX(4px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.anatomy-details-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.anatomy-symptoms-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.symptom-pill {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.symptom-pill:hover {
+  background: #EFF6FF;
+  border-color: #93C5FD;
+  color: #1D4ED8;
+}
+
+/* ==================================================================
+   3. AI LAB REPORT & BIOMARKER ANALYZER
+   ================================================================== */
+.lab-analyzer-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.biomarker-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 12.5px;
+}
+
+.biomarker-table th {
+  background: #F8FAFC;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--text-main);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.biomarker-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.biomarker-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 10.5px;
+  text-transform: uppercase;
+}
+
+.biomarker-tag.HIGH {
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: 1px solid #FCA5A5;
+}
+
+.biomarker-tag.LOW {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FCD34D;
+}
+
+.biomarker-tag.NORMAL {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+}
+
+/* ==================================================================
+   4. DRUG INTERACTION & ALLERGY DEFENSE HUD
+   ================================================================== */
+.drug-safety-banner {
+  background: #F0FDF4;
+  border: 1px solid #86EFAC;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drug-safety-banner.danger {
+  background: #FEF2F2;
+  border-color: #F87171;
+}
+
+.safety-score-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 3px solid #16A34A;
+  color: #16A34A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.safety-score-circle.danger {
+  border-color: #DC2626;
+  color: #DC2626;
+}
+
+/* ==================================================================
+   5. MALAYALAM QUICK LANGUAGE TOGGLE
+   ================================================================== */
+.lang-toggle-btn {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.lang-toggle-btn:hover {
+  background: #F8FAFC;
+  border-color: #2563EB;
+}
+
+/* ==================================================================
+   6. EMERGENCY 24/7 KOCHI TRAUMA SOS BEACON & MODAL
+   ================================================================== */
+.sos-beacon-btn {
+  background: #DC2626;
+  color: #FFFFFF !important;
+  border-radius: 30px;
+  padding: 10px 18px;
+  font-weight: 700;
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sos-beacon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.55);
+}
+
+.sos-pulse-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  display: inline-block;
+  animation: sosPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes sosPulse {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  50% { transform: scale(1.4); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.9; }
+}
+
+/* Print Styling for Kerala Health ID Pass */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-health-card, #printable-health-card * {
+    visibility: visible;
+  }
+  #printable-health-card {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 380px;
+    border: 2px solid #0F766E !important;
+    box-shadow: none !important;
+  }
+}

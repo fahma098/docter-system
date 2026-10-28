@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/telemedicine.css">
+  <link rel="stylesheet" href="css/extreme-features.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -120,6 +121,32 @@
 
       <!-- Tab 1: Today's Clinical Queue -->
       <div id="panel-today-queue" class="tab-content-panel">
+        <!-- Live OPD Queue Operations Bar -->
+        <div id="doctor-opd-ops-bar" style="background:#FFFFFF;border:1px solid #E2E8F0;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:38px;height:38px;border-radius:8px;background:var(--surface-light-teal);color:var(--healthcare-teal);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text-main);display:flex;align-items:center;gap:8px;">
+                <span>Consultation Suite: <strong>OPD Room 204 (Level 2)</strong></span>
+                <span class="badge badge-confirmed" style="font-size:10px;">CLINIC LIVE</span>
+              </div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;" id="doctor-queue-telemetry">
+                Tokens Assigned Sequentially • Real-Time Patient Check-In Active
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button type="button" id="btn-broadcast-delay" class="btn btn-outline btn-sm" style="font-size:11px;color:#D97706;border-color:#FCD34D;" title="Send delay announcement to waiting patients">
+              📢 Broadcast Delay (15m)
+            </button>
+            <button type="button" id="btn-hospital-chime" class="btn btn-teal btn-sm" style="font-size:11px;" title="Play hospital acoustic chime">
+              🔔 Hospital Chime
+            </button>
+          </div>
+        </div>
+
         <div id="today-queue-list">
           <div class="skeleton-card" style="height:110px;margin-bottom:12px;"></div>
           <div class="skeleton-card" style="height:110px;"></div>
@@ -196,17 +223,18 @@
 
   <!-- Complete Consultation Modal -->
   <div class="modal-backdrop" id="complete-modal">
-    <div class="modal" style="max-width:520px;">
+    <div class="modal" style="max-width:640px;">
       <div class="modal-header">
-        <h3 class="card-title" style="font-size:16px;color:var(--healthcare-teal);">Complete Consultation</h3>
+        <h3 class="card-title" style="font-size:16px;color:var(--healthcare-teal);">Complete Consultation & Clinical Rx</h3>
         <button type="button" class="modal-close" id="complete-modal-close">&times;</button>
       </div>
       <div class="modal-body">
-        <p style="font-size:13px;color:var(--text-main);margin-bottom:14px;">
+        <p style="font-size:13px;color:var(--text-main);margin-bottom:12px;">
           Mark consultation as completed for patient <strong id="complete-patient-name">Patient Name</strong>.
         </p>
 
-        <div style="background:var(--surface-light-teal);border:1px solid #99F6E4;border-radius:var(--radius-md);padding:10px 12px;margin-bottom:14px;">
+        <!-- AI Prescription Auto-Generator Box -->
+        <div style="background:var(--surface-light-teal);border:1px solid #99F6E4;border-radius:var(--radius-md);padding:12px 14px;margin-bottom:12px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
             <span style="font-size:12px;font-weight:700;color:var(--healthcare-teal);display:flex;align-items:center;gap:6px;">
               ✨ Smart AI Prescription Generator (Rx)
@@ -214,12 +242,37 @@
             <span style="font-size:10px;color:var(--text-secondary);">ICD-10 & Kerala Formulary</span>
           </div>
           <div style="display:flex;gap:8px;">
-            <input type="text" id="ai-rx-condition-input" class="form-control" style="font-size:12px;background:#fff;" placeholder="Diagnosis / Condition (e.g. Hypertension, Viral Bronchitis, Eczema)...">
+            <input type="text" id="ai-rx-condition-input" class="form-control" style="font-size:12px;background:#fff;" placeholder="Diagnosis (e.g. Stage-1 Hypertension, Bronchitis, Eczema)...">
             <button type="button" id="ai-generate-rx-btn" class="btn btn-teal btn-sm" style="flex-shrink:0;font-size:11px;font-weight:700;">
               ✨ Auto-Generate Rx
             </button>
           </div>
+          <!-- Quick Diagnostic ICD-10 Chips -->
+          <div style="margin-top:8px;">
+            <span style="font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;">Quick Presets:</span>
+            <div id="quick-diagnosis-chips" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+              <button type="button" class="btn btn-outline btn-sm diag-chip" data-diag="Stage-1 Systemic Hypertension" style="font-size:10px;padding:2px 7px;background:#fff;">Hypertension (I10)</button>
+              <button type="button" class="btn btn-outline btn-sm diag-chip" data-diag="Type 2 Diabetes Mellitus" style="font-size:10px;padding:2px 7px;background:#fff;">Diabetes (E11)</button>
+              <button type="button" class="btn btn-outline btn-sm diag-chip" data-diag="Acute URTI Viral Pharyngitis" style="font-size:10px;padding:2px 7px;background:#fff;">URTI / Pharyngitis (J06.9)</button>
+              <button type="button" class="btn btn-outline btn-sm diag-chip" data-diag="Allergic Contact Dermatitis" style="font-size:10px;padding:2px 7px;background:#fff;">Dermatitis (L23.9)</button>
+              <button type="button" class="btn btn-outline btn-sm diag-chip" data-diag="Bilateral Knee Osteoarthritis" style="font-size:10px;padding:2px 7px;background:#fff;">Osteoarthritis (M17.0)</button>
+              <button type="button" class="btn btn-outline btn-sm diag-chip" data-diag="Classic Migraine Cephalea" style="font-size:10px;padding:2px 7px;background:#fff;">Migraine (G43.0)</button>
+            </div>
+          </div>
         </div>
+
+        <!-- Quick Stamp & Safety Checker Bar -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+          <button type="button" id="btn-stamp-vitals" class="btn btn-outline btn-sm" style="font-size:11px;color:var(--primary-brand);border-color:#BFDBFE;">
+            🩺 Prepend Baseline Vitals
+          </button>
+          <button type="button" id="btn-check-drug-safety" class="btn btn-outline btn-sm" style="font-size:11px;color:#B45309;border-color:#F59E0B;background:#FFFBEB;">
+            🛡️ Verify Drug Interactions & Allergies
+          </button>
+        </div>
+
+        <!-- Drug Safety Check Results Alert Container -->
+        <div id="drug-safety-result-wrap" style="margin-bottom:10px;display:none;"></div>
 
         <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Doctor Clinical Instructions & Medical Prescription (Rx)</label>
@@ -237,6 +290,7 @@
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/telemedicine.js"></script>
+  <script src="js/extreme-features.js"></script>
   <script src="js/doctor.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/ai-assistant.css">
   <link rel="stylesheet" href="css/telemedicine.css">
+  <link rel="stylesheet" href="css/extreme-features.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -123,30 +124,98 @@
 
       <!-- Tab 3: Health Vault & Prescriptions -->
       <div id="panel-vault" class="tab-content-panel" style="display:none;">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)) 2fr;gap:20px;align-items:start;">
-          <!-- Emergency Health ID Card -->
-          <div class="card" style="border:1px solid #CBD5E1;box-shadow:var(--shadow-sm);">
-            <div class="card-header" style="background:linear-gradient(135deg, #EFF6FF 0%, #F0FDFA 100%);">
-              <h3 class="card-title" style="font-size:14px;color:var(--healthcare-teal);">🆔 Kerala Health ID Card</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(310px, 1fr)) 1.8fr;gap:20px;align-items:start;">
+          
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <!-- Emergency Health ID Card -->
+            <div class="card" id="printable-health-card" style="border:1px solid #CBD5E1;box-shadow:var(--shadow-sm);background:#FFFFFF;">
+              <div class="card-header" style="background:linear-gradient(135deg, #EFF6FF 0%, #F0FDFA 100%);display:flex;justify-content:space-between;align-items:center;">
+                <h3 class="card-title" style="font-size:14px;color:var(--healthcare-teal);">🆔 Kerala Health ID Card</h3>
+                <span class="badge badge-confirmed" style="font-size:10px;">VERIFIED UHID</span>
+              </div>
+              <div class="card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;">
+                  <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="width:46px;height:46px;border-radius:50%;background:#FEE2E2;color:#DC2626;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;">
+                      O+
+                    </div>
+                    <div>
+                      <strong id="vault-card-name" style="color:var(--text-main);font-size:14px;">Rahul Nair</strong>
+                      <div style="font-size:11px;color:var(--text-secondary);">Kochi Resident • UHID: KL-892401</div>
+                    </div>
+                  </div>
+                  <!-- Authentic SVG QR Code Badge -->
+                  <div style="width:52px;height:52px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;display:flex;align-items:center;justify-content:center;padding:4px;" title="Scan for Hospital Check-in">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="#0F766E">
+                      <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 0h4v2h-4v-2zm-4-2h2v4h-2v-4zm2 6h4v2h-4v-2zm2-4h2v2h-2v-2zm-4 4h2v2h-2v-2zm0-2h2v2h-2v-2zM5 5h2v2H5V5zm12 0h2v2h-2V5zM5 17h2v2H5v-2z"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <div style="font-size:12px;line-height:1.8;color:var(--text-main);">
+                  <div>🩸 <strong>Blood Group:</strong> O Positive (O+)</div>
+                  <div>⚠️ <strong>Allergies:</strong> No Known Drug Allergies (NKDA)</div>
+                  <div>🩺 <strong>Chronic History:</strong> Nil Under Treatment</div>
+                  <div>📞 <strong>Emergency SOS:</strong> +91 98470 12345</div>
+                </div>
+
+                <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:11px;color:#0F766E;font-weight:600;">Aura Kochi 24/7: +91 484 288 9000</span>
+                  <button type="button" id="btn-print-health-card" class="btn btn-outline btn-sm" style="font-size:11px;padding:3px 8px;">
+                    🖨️ Print Pass
+                  </button>
+                </div>
+              </div>
             </div>
-            <div class="card-body">
-              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-                <div style="width:46px;height:46px;border-radius:50%;background:#FEE2E2;color:#DC2626;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;">
-                  O+
-                </div>
-                <div>
-                  <strong id="vault-card-name" style="color:var(--text-main);font-size:14px;">Rahul Nair</strong>
-                  <div style="font-size:11px;color:var(--text-secondary);">Kochi Resident • UID: KL-892401</div>
-                </div>
+
+            <!-- Smart Vitals, BMI & Cardiovascular Health Meter -->
+            <div class="card" style="border:1px solid #CBD5E1;">
+              <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                <h3 class="card-title" style="font-size:14px;color:var(--healthcare-teal);">🩺 Smart Vitals & BMI Telemetry</h3>
+                <span class="badge badge-in-progress" style="font-size:10px;">Self-Tracker</span>
               </div>
-              <div style="font-size:12px;line-height:1.8;color:var(--text-main);">
-                <div>🩸 <strong>Blood Group:</strong> O Positive (O+)</div>
-                <div>⚠️ <strong>Allergies:</strong> No Known Drug Allergies</div>
-                <div>🩺 <strong>Chronic Conditions:</strong> None Recorded</div>
-                <div>📞 <strong>Emergency SOS:</strong> +91 98470 12345</div>
-              </div>
-              <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--border-color);font-size:11px;color:#0F766E;">
-                🚨 Aura Kochi 24/7 Casualty: <strong>+91 484 288 9000</strong>
+              <div class="card-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                  <div>
+                    <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:3px;">Height (cm)</label>
+                    <input type="number" id="vitals-height" class="form-control" value="172" style="font-size:12px;padding:6px 10px;">
+                  </div>
+                  <div>
+                    <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:3px;">Weight (kg)</label>
+                    <input type="number" id="vitals-weight" class="form-control" value="68" style="font-size:12px;padding:6px 10px;">
+                  </div>
+                  <div>
+                    <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:3px;">Systolic BP</label>
+                    <input type="number" id="vitals-systolic" class="form-control" value="120" style="font-size:12px;padding:6px 10px;">
+                  </div>
+                  <div>
+                    <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:3px;">Diastolic BP</label>
+                    <input type="number" id="vitals-diastolic" class="form-control" value="80" style="font-size:12px;padding:6px 10px;">
+                  </div>
+                </div>
+
+                <button type="button" id="btn-calc-vitals" class="btn btn-teal btn-sm" style="width:100%;font-size:11.5px;margin-bottom:10px;">
+                  ⚡ Calculate Health Telemetry & BMI
+                </button>
+
+                <div id="vitals-calc-result" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:10px 12px;font-size:12px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <span>Body Mass Index (BMI):</span>
+                    <strong style="color:var(--healthcare-teal);" id="vitals-bmi-val">23.0 kg/m²</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <span>Weight Category:</span>
+                    <span class="badge badge-confirmed" id="vitals-weight-cat">Normal Weight</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span>Blood Pressure Status:</span>
+                    <span class="badge badge-confirmed" id="vitals-bp-cat">Optimal (JNC-8)</span>
+                  </div>
+                </div>
+
+                <div id="kerala-diet-tip" style="margin-top:10px;padding:8px 10px;background:#F0FDF4;border-left:3px solid #16A34A;border-radius:4px;font-size:11.5px;color:#166534;">
+                  🌿 <strong>Kerala Wellness Tip:</strong> Prefer red matta rice in moderate portions, incorporate boiled moru (buttermilk) with ginger, and minimize deep-fried coconut oil snacks to preserve lipid health.
+                </div>
               </div>
             </div>
           </div>
@@ -161,6 +230,9 @@
               <p style="font-size:13px;color:var(--text-secondary);">Loading prescription records...</p>
             </div>
           </div>
+
+          <!-- AI Lab Report & Diagnostic Biomarker Analyzer -->
+          <div id="patient-lab-analyzer-wrap" style="grid-column: 1 / -1;"></div>
         </div>
       </div>
 
@@ -303,6 +375,7 @@
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/telemedicine.js"></script>
+  <script src="js/extreme-features.js"></script>
   <script src="js/patient.js"></script>
   <script src="js/ai-assistant.js"></script>
 </body>

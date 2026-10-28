@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/ai-assistant.css">
+  <link rel="stylesheet" href="css/extreme-features.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,11 +33,15 @@
       </ul>
 
       <div class="navbar-actions" id="nav-auth-actions">
+        <button type="button" class="lang-toggle-btn" id="lang-switch-btn" onclick="LanguageSwitcher.toggle()">🌐 English</button>
         <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
         <a href="register.html" class="btn btn-primary btn-sm">Register</a>
       </div>
     </div>
   </nav>
+
+  <!-- Real-Time Kerala Hospital Operations Telemetry Ticker -->
+  <div id="hospital-live-ticker"></div>
 
   <!-- Hero Section -->
   <header class="hero-section">
@@ -106,6 +111,11 @@
         <div class="skeleton-card" style="height:120px;"></div>
       </div>
     </div>
+  </section>
+
+  <!-- Interactive 3D Human Anatomy Symptom Locator -->
+  <section style="padding: 8px 0 32px;">
+    <div class="container" id="interactive-body-locator"></div>
   </section>
 
   <!-- Featured Verified Doctors -->
@@ -262,7 +272,16 @@
         const specId = document.getElementById('hero-spec-select').value;
         window.location.href = `doctors.html?search=${encodeURIComponent(query)}&specId=${specId}`;
       });
+
+      // Initialize Extreme Features: Live Hospital Operations Ticker & 3D Anatomy Locator
+      if (window.HospitalOperationsTicker) {
+        HospitalOperationsTicker.init('hospital-live-ticker');
+      }
+      if (window.InteractiveAnatomyLocator) {
+        InteractiveAnatomyLocator.init('interactive-body-locator');
+      }
     });
   </script>
+  <script src="js/extreme-features.js"></script>
 </body>
 </html>

@@ -58,9 +58,62 @@ async function loadPatientDashboard() {
 
     // Render Health Vault Prescriptions
     renderHealthVaultPrescriptions(data.pastAppointments || []);
+
+    // Initialize AI Lab Report & Diagnostic Biomarker Analyzer
+    if (window.AiLabAnalyzer) {
+      AiLabAnalyzer.init('patient-lab-analyzer-wrap');
+    }
+
+    // Initialize 24/7 Kochi Emergency SOS Beacon
+    if (window.KochiEmergencySOS) {
+      KochiEmergencySOS.init();
+    }
+
+    // Setup Health Vault Interactive Vitals Calculator
+    setupVitalsCalculator();
+
+    // Setup Print Digital Health Pass
+    document.getElementById('btn-print-health-card')?.addEventListener('click', () => {
+      window.print();
+    });
   } catch (err) {
     Api.showToast('Failed to load dashboard: ' + err.message, 'error');
   }
+}
+
+function setupVitalsCalculator() {
+  const calcBtn = document.getElementById('btn-calc-vitals');
+  if (!calcBtn || calcBtn.dataset.wired) return;
+  calcBtn.dataset.wired = 'true';
+
+  calcBtn.addEventListener('click', () => {
+    const height = parseFloat(document.getElementById('vitals-height')?.value) || 172;
+    const weight = parseFloat(document.getElementById('vitals-weight')?.value) || 68;
+    const sys = parseInt(document.getElementById('vitals-systolic')?.value) || 120;
+    const dia = parseInt(document.getElementById('vitals-diastolic')?.value) || 80;
+
+    if (window.HealthVitalsCalculator) {
+      const res = HealthVitalsCalculator.calculate(height, weight, sys, dia);
+      const bmiVal = document.getElementById('vitals-bmi-val');
+      const weightCat = document.getElementById('vitals-weight-cat');
+      const bpCat = document.getElementById('vitals-bp-cat');
+      const dietTip = document.getElementById('kerala-diet-tip');
+
+      if (bmiVal) bmiVal.textContent = `${res.bmi} kg/m²`;
+      if (weightCat) {
+        weightCat.textContent = res.weightCategory;
+        weightCat.className = `badge ${res.bmiBadgeClass}`;
+      }
+      if (bpCat) {
+        bpCat.textContent = res.bpCategory;
+        bpCat.className = `badge ${res.bpBadgeClass}`;
+      }
+      if (dietTip) {
+        dietTip.innerHTML = res.dietTip;
+      }
+      Api.showToast('Health vitals telemetry & Kerala wellness advice updated!', 'success');
+    }
+  });
 }
 
 function renderUpcomingAppointments(appointments) {
