@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EFF6FF"/>
+      <stop offset="100%" stop-color="#DBEAFE"/>
+    </linearGradient>
+    <linearGradient id="coatGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F1F5F9"/>
+    </linearGradient>
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F766E"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Circular Background -->
+  <circle cx="100" cy="100" r="100" fill="url(#bgGrad)"/>
+  
+  <!-- Stethoscope background curve -->
+  <path d="M 70 120 Q 60 160 100 170 Q 140 160 130 120" fill="none" stroke="#0F766E" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="100" cy="170" r="7" fill="#0F766E"/>
+  
+  <!-- Doctor Body / Lab Coat -->
+  <path d="M 40 200 C 40 150 70 135 100 135 C 130 135 160 150 160 200 Z" fill="url(#coatGrad)" stroke="#CBD5E1" stroke-width="2"/>
+  
+  <!-- Shirt & Tie/Scrub -->
+  <polygon points="100,135 88,160 112,160" fill="url(#tealGrad)"/>
+  <line x1="100" y1="160" x2="100" y2="200" stroke="#0F766E" stroke-width="3"/>
+  
+  <!-- Coat Lapels -->
+  <path d="M 68 145 L 88 175 L 85 200" fill="none" stroke="#CBD5E1" stroke-width="2"/>
+  <path d="M 132 145 L 112 175 L 115 200" fill="none" stroke="#CBD5E1" stroke-width="2"/>
+  
+  <!-- Neck -->
+  <rect x="90" y="110" width="20" height="25" fill="#E2E8F0" rx="4"/>
+  
+  <!-- Head -->
+  <circle cx="100" cy="80" r="32" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+  
+  <!-- Medical Headband / Mirror / Hair -->
+  <path d="M 72 75 C 72 50 128 50 128 75 C 120 62 108 58 100 58 C 92 58 80 62 72 75 Z" fill="#334155"/>
+  
+  <!-- Doctor Cross Badge on Left Chest -->
+  <circle cx="68" cy="170" r="10" fill="#0F766E"/>
+  <rect x="66" y="164" width="4" height="12" fill="#FFFFFF" rx="1"/>
+  <rect x="62" y="168" width="12" height="4" fill="#FFFFFF" rx="1"/>
+</svg>

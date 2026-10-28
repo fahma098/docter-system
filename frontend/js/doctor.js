@@ -35,7 +35,7 @@ async function loadDoctorDashboard() {
     document.getElementById('stat-completed-today').textContent = data.completedTodayCount;
     document.getElementById('stat-pending').textContent = data.pendingCount;
     document.getElementById('stat-total-patients').textContent = data.totalPatients;
-    document.getElementById('stat-earnings').textContent = `$${Number(data.monthlyEarnings || 0).toFixed(2)}`;
+    document.getElementById('stat-earnings').textContent = Api.formatCurrency(data.monthlyEarnings);
 
     // Today's Queue
     renderTodayQueue(data.todayAppointments);

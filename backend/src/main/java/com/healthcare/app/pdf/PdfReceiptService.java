@@ -56,10 +56,10 @@ public class PdfReceiptService {
             document.open();
 
             // Clinic metadata
-            String clinicName = systemSettingRepository.getValueOrDefault("CLINIC_NAME", "Aura Health & Medical Specialist Center");
-            String clinicAddr = systemSettingRepository.getValueOrDefault("CLINIC_ADDRESS", "450 Healthcare Blvd, Suite 800, Metro City");
-            String clinicPhone = systemSettingRepository.getValueOrDefault("CLINIC_PHONE", "+1 (800) 555-0199");
-            String clinicEmail = systemSettingRepository.getValueOrDefault("CLINIC_EMAIL", "support@aurahealth.org");
+            String clinicName = systemSettingRepository.getValueOrDefault("CLINIC_NAME", "Aura Multispeciality Hospital & Medical Research Centre, Kochi");
+            String clinicAddr = systemSettingRepository.getValueOrDefault("CLINIC_ADDRESS", "Marine Drive, Ernakulam, Kochi, Kerala 682031, India");
+            String clinicPhone = systemSettingRepository.getValueOrDefault("CLINIC_PHONE", "+91 484 288 9000");
+            String clinicEmail = systemSettingRepository.getValueOrDefault("CLINIC_EMAIL", "appointments@aurakerala.health");
 
             // Fonts
             Font brandFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, PRIMARY_BLUE);
@@ -204,7 +204,7 @@ public class PdfReceiptService {
             billHeader1.setPadding(6);
             billHeader1.setBorderColor(BORDER_COLOR);
 
-            PdfPCell billHeader2 = new PdfPCell(new Paragraph("AMOUNT (USD)", sectionTitleFont));
+            PdfPCell billHeader2 = new PdfPCell(new Paragraph("AMOUNT (INR)", sectionTitleFont));
             billHeader2.setBackgroundColor(LIGHT_BG);
             billHeader2.setHorizontalAlignment(Element.ALIGN_RIGHT);
             billHeader2.setPadding(6);
@@ -214,9 +214,9 @@ public class PdfReceiptService {
             billTable.addCell(billHeader2);
 
             BigDecimal fee = app.getConsultationFee() != null ? app.getConsultationFee() : BigDecimal.ZERO;
-            addBillRow(billTable, "Doctor Consultation Fee (" + app.getSpecializationName() + ")", "$" + fee.setScale(2), valueFont, valueFont);
-            addBillRow(billTable, "Clinic Facility & Health Records Charge", "$0.00 (Waived)", valueFont, valueFont);
-            addBillRow(billTable, "Applicable Healthcare Taxes", "$0.00", valueFont, valueFont);
+            addBillRow(billTable, "Doctor Consultation Fee (" + app.getSpecializationName() + ")", "Rs. " + fee.setScale(2), valueFont, valueFont);
+            addBillRow(billTable, "Clinic Facility & Electronic Health Records Charge", "Rs. 0.00 (Waived)", valueFont, valueFont);
+            addBillRow(billTable, "Applicable Healthcare Taxes (Kerala GST Exempt)", "Rs. 0.00", valueFont, valueFont);
 
             // Total row
             PdfPCell totDesc = new PdfPCell(new Paragraph("TOTAL AMOUNT PAYABLE", boldValueFont));
@@ -224,7 +224,7 @@ public class PdfReceiptService {
             totDesc.setPadding(8);
             totDesc.setBorderColor(BORDER_COLOR);
 
-            PdfPCell totVal = new PdfPCell(new Paragraph("$" + fee.setScale(2), boldValueFont));
+            PdfPCell totVal = new PdfPCell(new Paragraph("Rs. " + fee.setScale(2), boldValueFont));
             totVal.setBackgroundColor(LIGHT_TEAL);
             totVal.setHorizontalAlignment(Element.ALIGN_RIGHT);
             totVal.setPadding(8);

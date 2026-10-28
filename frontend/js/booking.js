@@ -35,7 +35,7 @@ async function loadDoctorDirectoryDropdown(preselectedId) {
     doctors.forEach(doc => {
       const opt = document.createElement('option');
       opt.value = doc.doctorId;
-      opt.textContent = `${doc.fullName} (${doc.specializationName}) - $${doc.consultationFee}`;
+      opt.textContent = `${doc.fullName} (${doc.specializationName}) - ${Api.formatCurrency(doc.consultationFee)}`;
       opt.dataset.doctor = JSON.stringify(doc);
       if (preselectedId && String(doc.doctorId) === String(preselectedId)) {
         opt.selected = true;
@@ -71,14 +71,14 @@ function renderDoctorSummary(doc) {
 
   if (!doc) {
     if (card) card.innerHTML = `<p style="font-size:13px;color:var(--text-secondary);">Select a doctor to begin booking</p>`;
-    if (feeLabel) feeLabel.textContent = '$0.00';
-    if (totalLabel) totalLabel.textContent = '$0.00';
+    if (feeLabel) feeLabel.textContent = '₹0';
+    if (totalLabel) totalLabel.textContent = '₹0';
     return;
   }
 
   if (card) {
     card.innerHTML = `
-      <img src="${doc.profileImageUrl || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200'}" class="doctor-avatar" style="width:54px;height:54px;" alt="Doctor">
+      <img src="${doc.profileImageUrl || 'images/default-doctor.svg'}" onerror="this.onerror=null; this.src='images/default-doctor.svg';" class="doctor-avatar" style="width:54px;height:54px;" alt="Doctor">
       <div>
         <h4 style="font-size:14px;font-weight:700;color:var(--text-main);">${escapeHtml(doc.fullName)}</h4>
         <span class="doctor-spec" style="font-size:11px;">${escapeHtml(doc.specializationName)}</span>
@@ -87,9 +87,9 @@ function renderDoctorSummary(doc) {
     `;
   }
 
-  const fee = Number(doc.consultationFee || 0).toFixed(2);
-  if (feeLabel) feeLabel.textContent = `$${fee}`;
-  if (totalLabel) totalLabel.textContent = `$${fee}`;
+  const feeFormatted = Api.formatCurrency(doc.consultationFee);
+  if (feeLabel) feeLabel.textContent = feeFormatted;
+  if (totalLabel) totalLabel.textContent = feeFormatted;
 }
 
 function setupCalendarControls() {

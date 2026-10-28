@@ -63,7 +63,12 @@ public class DoctorDto {
     public String getProfessionalBio() { return professionalBio; }
     public void setProfessionalBio(String professionalBio) { this.professionalBio = professionalBio; }
 
-    public String getProfileImageUrl() { return profileImageUrl; }
+    public String getProfileImageUrl() {
+        if (profileImageUrl == null || profileImageUrl.trim().isEmpty()) {
+            return "images/default-doctor.svg";
+        }
+        return profileImageUrl;
+    }
     public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
 
     public String getApprovalStatus() { return approvalStatus; }

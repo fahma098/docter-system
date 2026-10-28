@@ -4,20 +4,28 @@
 
 -- 1. System Settings
 INSERT INTO system_settings (setting_key, setting_value, description)
-SELECT 'CLINIC_NAME', 'Aura Health & Medical Specialist Center', 'Official clinic branding name'
+SELECT 'CLINIC_NAME', 'Aura Multispeciality Hospital & Medical Research Centre, Kochi', 'Official clinic branding name'
 WHERE NOT EXISTS (SELECT 1 FROM system_settings WHERE setting_key = 'CLINIC_NAME');
 
 INSERT INTO system_settings (setting_key, setting_value, description)
-SELECT 'CLINIC_ADDRESS', '450 Healthcare Blvd, Suite 800, Metro City', 'Clinic physical address'
+SELECT 'CLINIC_ADDRESS', 'Marine Drive, Ernakulam, Kochi, Kerala 682031, India', 'Clinic physical address'
 WHERE NOT EXISTS (SELECT 1 FROM system_settings WHERE setting_key = 'CLINIC_ADDRESS');
 
 INSERT INTO system_settings (setting_key, setting_value, description)
-SELECT 'CLINIC_PHONE', '+1 (800) 555-0199', 'Main patient helpline and booking desk'
+SELECT 'CLINIC_PHONE', '+91 484 288 9000', 'Main patient helpline and booking desk'
 WHERE NOT EXISTS (SELECT 1 FROM system_settings WHERE setting_key = 'CLINIC_PHONE');
 
 INSERT INTO system_settings (setting_key, setting_value, description)
-SELECT 'CLINIC_EMAIL', 'appointments@aurahealth.org', 'Official healthcare email'
+SELECT 'CLINIC_EMAIL', 'appointments@aurakerala.health', 'Official healthcare email'
 WHERE NOT EXISTS (SELECT 1 FROM system_settings WHERE setting_key = 'CLINIC_EMAIL');
+
+INSERT INTO system_settings (setting_key, setting_value, description)
+SELECT 'CURRENCY_CODE', 'INR', 'Official billing currency'
+WHERE NOT EXISTS (SELECT 1 FROM system_settings WHERE setting_key = 'CURRENCY_CODE');
+
+INSERT INTO system_settings (setting_key, setting_value, description)
+SELECT 'CURRENCY_SYMBOL', '₹', 'Currency display symbol'
+WHERE NOT EXISTS (SELECT 1 FROM system_settings WHERE setting_key = 'CURRENCY_SYMBOL');
 
 INSERT INTO system_settings (setting_key, setting_value, description)
 SELECT 'DEFAULT_APPOINTMENT_DURATION_MINUTES', '30', 'Standard appointment duration in minutes'

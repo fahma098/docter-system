@@ -33,7 +33,8 @@ public class AppConfig implements WebMvcConfigurer {
                         "/api/doctors",
                         "/api/doctors/*",
                         "/api/doctors/*/availability",
-                        "/api/appointments/verify/*"
+                        "/api/appointments/verify/*",
+                        "/api/ai/**"
                 );
     }
 
