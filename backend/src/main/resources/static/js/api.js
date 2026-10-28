@@ -167,6 +167,13 @@ const Api = {
     return `${h}:${m} ${ampm}`;
   },
 
+  formatCurrency(amount) {
+    const val = Number(amount || 0);
+    return '₹' + val.toLocaleString('en-IN', {
+      maximumFractionDigits: 2
+    });
+  },
+
   getStatusBadge(status) {
     const s = (status || '').toUpperCase();
     switch (s) {

@@ -37,7 +37,7 @@ async function loadAdminDashboard() {
     document.getElementById('stat-pending-apps').textContent = data.pendingAppointments;
     document.getElementById('stat-completed-apps').textContent = data.completedAppointments;
     document.getElementById('stat-cancelled-apps').textContent = data.cancelledAppointments;
-    document.getElementById('stat-total-revenue').textContent = `$${Number(data.totalRevenueCollected || 0).toFixed(2)}`;
+    document.getElementById('stat-total-revenue').textContent = Api.formatCurrency(data.totalRevenueCollected);
 
     // Render Charts
     renderCharts(data);
@@ -168,7 +168,7 @@ function renderRecentAppointments(appointments) {
       <td>${escapeHtml(app.doctorName)}</td>
       <td>${Api.formatDate(app.appointmentDate)} ${Api.formatTime(app.startTime)}</td>
       <td>${Api.getStatusBadge(app.appointmentStatus)}</td>
-      <td>$${Number(app.consultationFee || 0).toFixed(2)}</td>
+      <td>${Api.formatCurrency(app.consultationFee)}</td>
       <td>
         <a href="${API_BASE}/appointments/${app.appointmentId}/receipt/preview?token=${Api.getToken()}" target="_blank" class="btn btn-outline btn-sm">
           Pass
@@ -219,7 +219,7 @@ async function loadDoctorsManagement() {
       tr.innerHTML = `
         <td>
           <div style="display:flex;align-items:center;gap:10px;">
-            <img src="${doc.profileImageUrl || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=100'}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+            <img src="${doc.profileImageUrl || 'images/default-doctor.svg'}" onerror="this.onerror=null; this.src='images/default-doctor.svg';" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
             <div>
               <strong>${escapeHtml(doc.fullName)}</strong>
               <div style="font-size:11px;color:var(--text-secondary);">${escapeHtml(doc.email)}</div>
@@ -229,7 +229,7 @@ async function loadDoctorsManagement() {
         <td>${escapeHtml(doc.specializationName)}</td>
         <td>${escapeHtml(doc.licenseNumber)}</td>
         <td>${doc.experienceYears} Yrs</td>
-        <td>$${Number(doc.consultationFee).toFixed(2)}</td>
+        <td>${Api.formatCurrency(doc.consultationFee)}</td>
         <td>
           <span class="badge ${isApproved ? 'badge-confirmed' : 'badge-pending'}">
             ${escapeHtml(doc.approvalStatus)}
@@ -416,7 +416,7 @@ async function loadAllAppointmentsManagement() {
         <td>${Api.formatDate(app.appointmentDate)}</td>
         <td>${Api.formatTime(app.startTime)}</td>
         <td>${Api.getStatusBadge(app.appointmentStatus)}</td>
-        <td>$${Number(app.consultationFee || 0).toFixed(2)}</td>
+        <td>${Api.formatCurrency(app.consultationFee)}</td>
         <td>
           <a href="${API_BASE}/appointments/${app.appointmentId}/receipt/preview?token=${Api.getToken()}" target="_blank" class="btn btn-outline btn-sm">
             PDF
